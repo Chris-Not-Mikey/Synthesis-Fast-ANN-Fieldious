@@ -1,7 +1,8 @@
 cif istyle sky130(vendor)
-foreach f [glob -directory inputs *.lef] {
-    lef read $f
-}
+
+# foreach f [glob -directory inputs *.lef] {
+#     lef read $f
+# }
 gds noduplicates true
 gds order true
 
