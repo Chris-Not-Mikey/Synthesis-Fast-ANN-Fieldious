@@ -45,7 +45,7 @@ if {$ptpx_analysis_mode == "time_based" || $ptpx_averaged_use_activity == "vcd"}
 		> $ptpx_reports_dir/$ptpx_design_name.activity.pre.rpt
 
 	echo "Read SAIF activity annotation file."
-	read_saif -strip_path $ptpx_strip_path $ptpx_saif
+	read_saif  $ptpx_saif -strip_path $ptpx_strip_path
 }
 
 # Read SDC file

@@ -55,6 +55,7 @@ def construct():
   rtl             = Step( this_dir + '/rtl'                             )
   constraints     = Step( this_dir + '/constraints'                     )
   testbench       = Step( this_dir + '/testbench'                       )
+  floorplan       = Step( this_dir + '/floorplan'                       )
   
   # Power node is custom because power and gnd pins are named differently in
   # the standard cells compared to the default node, and the layer numbering is
@@ -132,6 +133,7 @@ def construct():
   g.add_step( constraints     )
   g.add_step( dc              )
   g.add_step( iflow           )
+  g.add_step( floorplan       )
   g.add_step( init            )
   g.add_step( power           )
   g.add_step( place           )
@@ -161,7 +163,7 @@ def construct():
   #-----------------------------------------------------------------------
   
   # Dynamically add edges
-
+  init.extend_inputs(['floorplan.tcl'])
   rtl_sim.extend_inputs(['test_vectors.txt'])
   gl_sim.extend_inputs(['test_vectors.txt'])
 
@@ -216,6 +218,7 @@ def construct():
   g.connect_by_name( iflow,           signoff         )
   
   # Core place and route flow
+  g.connect_by_name( floorplan,       init            )
   g.connect_by_name( init,            power           )
   g.connect_by_name( power,           place           )
   g.connect_by_name( place,           cts             )

@@ -22,7 +22,7 @@ def construct():
   # Parameters
   #-----------------------------------------------------------------------
   
-  adk_name = 'skywater-130nm-adk-open_pdks'
+  adk_name = 'skywater-130nm-adk'
   adk_view = 'view-standard'
 
   parameters = {
@@ -80,7 +80,7 @@ def construct():
   magic_gds2spice = Step( this_dir + '/open-magic-gds2spice'            )
   magic_gds2spice_nobbox = Step( this_dir + '/open-magic-gds2spice-nobbox'            )
   netgen_lvs_def  = Step( this_dir + '/netgen-lvs-def'       )
-  
+  magic_antenna   = Step( this_dir + '/open-magic-antenna'              )
   netgen_lvs_gds  = Step( this_dir + '/netgen-lvs-gds'                 )
 
   calibre_lvs     = Step( this_dir + '/mentor-calibre-comparison'       )
@@ -155,9 +155,10 @@ def construct():
   g.add_step( pt_timing       )
   g.add_step( gen_saif_rtl    )
   g.add_step( gen_saif_gl     )
-  g.add_step( pt_power_rtl     )
+  g.add_step( pt_power_rtl    )
   g.add_step( pt_power_gl     )
   g.add_step( magic_drc       )
+  g.add_step( magic_antenna   )
   g.add_step( magic_def2spice )
   g.add_step( netgen_lvs_def  )
   g.add_step( magic_gds2spice )
@@ -206,6 +207,7 @@ def construct():
   g.connect_by_name( adk,             signoff         )
   g.connect_by_name( adk,             gdsmerge        )
   g.connect_by_name( adk,             magic_drc       )
+  g.connect_by_name( adk,             magic_antenna   )
   g.connect_by_name( adk,             magic_def2spice )
   g.connect_by_name( adk,             magic_gds2spice )
   g.connect_by_name( adk,             magic_gds2spice_nobbox )
@@ -280,6 +282,7 @@ def construct():
   
   # DRC, LVS, timing signoff and power signoff
   g.connect_by_name( gdsmerge,        magic_drc       )
+  g.connect_by_name( gdsmerge,        magic_antenna   )
 
   # LVS using DEF
   g.connect_by_name( signoff,         magic_def2spice )
