@@ -5,7 +5,7 @@
 # Knobs
 The sdf back-annotated the simulation passes the INTERCONNECT, CELL DELAY etc., to the simulator.
 
-1. `max:${testbench_name}.${dut_name}:inputs/design.sdf`, the max can be change to min/typ/max which stands for different delay corners
+1. `max:${testbench_name}.${dut_name}:inputs/design.sdf` in the line 38 of `run.sh` file, the max can be change to min/typ/max which stands for different delay corners
 
 # Known bug type (To be completed)
 
