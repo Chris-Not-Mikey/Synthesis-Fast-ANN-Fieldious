@@ -40,5 +40,5 @@ This occurs once in the simulation, if you encounter it in your design, just com
         etc...
     endspecify
 
-`endef  // Add me!
+`endif  // Add me!
 ```
