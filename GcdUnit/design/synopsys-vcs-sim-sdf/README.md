@@ -5,9 +5,9 @@
 # Knobs
 The sdf back-annotated the simulation passes the INTERCONNECT, CELL DELAY etc., to the simulator.
 
-1. `max:${testbench_name}.${dut_name}:inputs/design.sdf` in the line 38 of `run.sh` file, the max can be change to min/typ/max which stands for different delay corners. The `typ` delay corner does not include any delays (Need to debug later).
+1. `max:${testbench_name}.${dut_name}:inputs/design.sdf` in the line 38 of `run.sh` file, the max can be change to min/typ/max which stands for different delay corners. The `typ` delay corner does not include any delays (Need to debug later). We make `max` the default simualtion option.
 
-# Known bug type (To be completed)
+# Known bug patterns (In the cvc-pdk)
  Some typical bugs you may want to know when you encounter them in your simulation:
 
 1. Wrong definition of the `notifier`. `notifier` notifies the simulator when a timing violation occurs. It has to be defined as an `reg`. 
@@ -24,7 +24,7 @@ reg notifier;
 
 2. Wrong definition of `wire 1;`.
 
-This occurs once in the simulation, if you encountered in your design, just comment it out.
+This occurs once in the simulation, if you encountered in your design, just comment it out in cvc-pdk.
 
 
 3. Missing ifdef and endif sections. The specify block has to be conditionally enabled by defineing `FUNCTIONAL`. This error usually translates to an undefined module error in vcs simulation if you encounter it. The correction is to include the specify - endspecify block into ifdef endif sections like the following:
