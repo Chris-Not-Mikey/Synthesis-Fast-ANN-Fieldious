@@ -27,7 +27,7 @@ reg notifier;
 This occurs once in the simulation, if you encountered in your design, just comment it out in cvc-pdk.
 
 
-3. Missing ifdef and endif sections. The specify block has to be conditionally enabled by defineing `FUNCTIONAL`. This error usually translates to an undefined module error in vcs simulation if you encounter it. The correction is to include the specify - endspecify block into ifdef endif sections like the following:
+3. Missing ifdef and endif sections. The specify block has to be conditionally enabled by defining `FUNCTIONAL`. This error usually translates to an undefined module error in vcs simulation if you encounter it. The correction is to include the specify - endspecify block into ifdef endif sections like the following:
 
 ```
 `ifdef FUNCTIONAL // Add me!
