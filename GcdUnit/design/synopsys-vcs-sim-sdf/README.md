@@ -1,5 +1,5 @@
 # Intro
- This is an example SDF gate-level simulationsof sky130.
+ This is an example SDF gate-level simulations of sky130.
  It uses a modified pdk, called `cvc-pdk`. At this point, we only have it ran on the GcdUnit example. Due to the size of the design, it does not covers all of the standard cells, please be prepared for bugs if your design invloves SRAM + more stdcells.
 
 # Knobs
