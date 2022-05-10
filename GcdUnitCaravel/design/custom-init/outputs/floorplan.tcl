@@ -27,7 +27,7 @@ set core_margin_l [expr ([llength $pwr_net_list] * ($savedvars(p_ring_width) + $
 
 # User project area is limited to 2920um x 3520um
 floorPlan -d [expr 2860] \
-             [expr 3460] \
+             [expr 3470] \
              $core_margin_l $core_margin_b $core_margin_r $core_margin_t
 
 

@@ -17,8 +17,8 @@ module GcdUnitWrapperTb;
   wire deq;
   wire ack;
 
-  supply0 VSS;
-  supply1 VDD;
+  supply0 vssd1;
+  supply1 vccd1;
 
   reg [16 + 16 + 16 - 1 : 0] test_vectors [`NUM_TEST_VECTORS - 1 : 0];
 
@@ -26,8 +26,8 @@ module GcdUnitWrapperTb;
  
   user_proj_example #( .BITS(32) ) GcdUnitWrapper_inst (
     `ifdef USE_POWER_PINS
-    .VDD(VDD),	// User area 1 1.8V supply
-    .VSS(VSS),	// User area 1 digital ground
+    .vccd1(vccd1),	// User area 1 1.8V supply
+    .vssd1(vssd1),	// User area 1 digital ground
     `endif
 
     // Wishbone signals

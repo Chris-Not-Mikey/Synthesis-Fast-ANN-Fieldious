@@ -56,6 +56,7 @@ def construct():
   constraints     = Step( this_dir + '/constraints'                     )
   testbench       = Step( this_dir + '/testbench'                       )
   custom_init     = Step( this_dir + '/custom-init'                     ) 
+  custom_flowstep = Step( this_dir + '/custom-flowstep'                 ) 
   # Power node is custom because power and gnd pins are named differently in
   # the standard cells compared to the default node, and the layer numbering is
   # different because of li layer, the default assumes metal 1 is the lowest
@@ -122,6 +123,7 @@ def construct():
   
   # Add extra input edges to innovus steps that need custom tweaks
   init.extend_inputs ( custom_init.all_outputs()  )
+  iflow.extend_inputs ( custom_flowstep.all_outputs()  )
   
   #-----------------------------------------------------------------------
   # Graph -- Add nodes
@@ -136,6 +138,7 @@ def construct():
   g.add_step( iflow           )
   g.add_step( init            )
   g.add_step( custom_init     )
+  g.add_step( custom_flowstep )
   g.add_step( power           )
   g.add_step( place           )
   g.add_step( cts             )
@@ -223,6 +226,8 @@ def construct():
   order = init.get_param( 'order' )
   order.append( 'dont-use-cells.tcl' )
 
+  g.connect_by_name( custom_flowstep, iflow           )
+  
   g.connect_by_name( init,            power           )
   g.connect_by_name( power,           place           )
   g.connect_by_name( place,           cts             )
