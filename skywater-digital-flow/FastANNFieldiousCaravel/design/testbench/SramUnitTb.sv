@@ -192,8 +192,8 @@ module top_wrapper_tb();
             $finish;
         end
         
-        received_idx_data_file = $fopen("data/IO_data/received_idx.txt", "w");
-        received_dist_data_file = $fopen("data/IO_data/received_dist.txt", "w");
+        received_idx_data_file = $fopen("received_idx.txt", "w");
+        received_dist_data_file = $fopen("received_dist.txt", "w");
       
         for (int q=0; q<2; q=q+1) begin
             $display("Starting new image");
