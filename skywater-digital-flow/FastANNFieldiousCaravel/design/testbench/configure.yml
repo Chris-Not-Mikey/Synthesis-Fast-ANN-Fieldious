@@ -1,5 +1,3 @@
-# TODO: Set number of vectors parameter in python file and testbench from yml
-
 name: testbench
 
 inputs:
@@ -7,15 +5,21 @@ inputs:
 
 outputs:
   - testbench.sv
-  - test_vectors.txt
+  - testbench.gls.sv
   - design.args
   - design.args.gls
+  - expected_index.txt
+  - internalNodes.txt
+  - leafNodes.txt
+  - patches.txt
 
 commands:
-  - cp GcdUnitWrapperTb.sv outputs/testbench.sv
-  - python3 generate_test_vectors.py
-  - cp test_vectors.txt outputs/test_vectors.txt
+  - cp SramUnitTb.sv outputs/testbench.sv
   - cp design.vcs.args outputs/design.args
   - cp design.vcs.args.gls outputs/design.args.gls
+  - cp expected_index.txt outputs/expected_index.txt
+  - cp internalNodes.txt outputs/internalNodes.txt
+  - cp leafNodes.txt outputs/leafNodes.txt
+  - cp patches.txt outputs/patches.txt
   # - cp design.icarus.args outputs/design.args
   # - cp design.icarus.args.gls outputs/design.args.gls

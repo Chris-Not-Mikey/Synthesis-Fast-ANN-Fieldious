@@ -5,5 +5,5 @@ outputs:
   - design.vcs.v
 
 commands:
-  - cat GcdUnit-demo.v user_proj_example.v > outputs/design.v 
-  - cat GcdUnit-demo.v user_proj_example.v > outputs/design.vcs.v 
+  - cat SramUnit.v > outputs/design.v 
+  - cat SramUnit.v > outputs/design.vcs.v 
