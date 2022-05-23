@@ -175,13 +175,13 @@ def construct():
   # Dynamically add edges
 
   rtl_sim.extend_inputs(['sky130_sram_1kbyte_1rw1r_32x256_8.v'])
-  rtl_sim.extend_inputs(['expected_index.txt'])
+  rtl_sim.extend_inputs(['expectedIndex.txt'])
   rtl_sim.extend_inputs(['internalNodes.txt'])
   rtl_sim.extend_inputs(['leafNodes.txt'])
   rtl_sim.extend_inputs(['patches.txt'])
   
   gl_sim.extend_inputs(['sky130_sram_1kbyte_1rw1r_32x256_8.v'])
-  gl_sim.extend_inputs(['expected_index.txt'])
+  gl_sim.extend_inputs(['expectedIndex.txt'])
   gl_sim.extend_inputs(['internalNodes.txt'])
   gl_sim.extend_inputs(['leafNodes.txt'])
   gl_sim.extend_inputs(['patches.txt'])
