@@ -8,7 +8,7 @@ outputs:
   - testbench.gls.sv
   - design.args
   - design.args.gls
-  - expected_index.txt
+  - expectedIndex.txt
   - internalNodes.txt
   - leafNodes.txt
   - patches.txt
@@ -17,7 +17,7 @@ commands:
   - cp SramUnitTb.sv outputs/testbench.sv
   - cp design.vcs.args outputs/design.args
   - cp design.vcs.args.gls outputs/design.args.gls
-  - cp expected_index.txt outputs/expected_index.txt
+  - cp expected_index.txt outputs/expectedIndex.txt
   - cp internalNodes.txt outputs/internalNodes.txt
   - cp leafNodes.txt outputs/leafNodes.txt
   - cp patches.txt outputs/patches.txt
