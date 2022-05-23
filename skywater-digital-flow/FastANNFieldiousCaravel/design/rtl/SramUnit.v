@@ -197,7 +197,7 @@ module user_proj_example #(
     //     .LEAF_ADDRW(LEAF_ADDRW)
     // ) 
     acc_inst (
-        .clk(clkmux_clk),
+        .clk(wb_clk_i),
         .rst_n(rstmux_rst_n),
 
         .load_kdtree(load_kdtree),
@@ -246,7 +246,7 @@ module user_proj_example #(
     );
 
     SyncPulse fsm_done_sync (
-        .sCLK(clkmux_clk),
+        .sCLK(io_clk),
         .sRST(),  // not needed
         .sEN(fsm_done),
         .dCLK(wb_clk_i),
@@ -254,7 +254,7 @@ module user_proj_example #(
     );
 
     SyncPulse load_done_sync (
-        .sCLK(clkmux_clk),
+        .sCLK(io_clk),
         .sRST(),  // not needed
         .sEN(load_done),
         .dCLK(wb_clk_i),
@@ -262,7 +262,7 @@ module user_proj_example #(
     );
 
     SyncPulse send_done_sync (
-        .sCLK(clkmux_clk),
+        .sCLK(io_clk),
         .sRST(),  // not needed
         .sEN(send_done),
         .dCLK(wb_clk_i),
