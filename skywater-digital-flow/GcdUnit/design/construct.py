@@ -22,7 +22,7 @@ def construct():
   # Parameters
   #-----------------------------------------------------------------------
   
-  adk_name = 'skywater-130nm-adk-open_pdks'
+  adk_name = 'skywater-130nm-adk'
   adk_view = 'view-standard'
 
   parameters = {
@@ -55,6 +55,7 @@ def construct():
   rtl             = Step( this_dir + '/rtl'                             )
   constraints     = Step( this_dir + '/constraints'                     )
   testbench       = Step( this_dir + '/testbench'                       )
+  floorplan       = Step( this_dir + '/floorplan'                       )
   
   # Power node is custom because power and gnd pins are named differently in
   # the standard cells compared to the default node, and the layer numbering is
@@ -75,8 +76,9 @@ def construct():
   magic_drc       = Step( this_dir + '/open-magic-drc'                  )
   magic_def2spice = Step( this_dir + '/open-magic-def2spice'            )
   magic_gds2spice = Step( this_dir + '/open-magic-gds2spice'            )
-  netgen_lvs_gds  = Step( this_dir + '/netgen-lvs-gds'                 )
-  netgen_lvs_def  = Step( this_dir + '/netgen-lvs-def'                 )
+  netgen_lvs_gds  = Step( this_dir + '/netgen-lvs-gds'                  )
+  netgen_lvs_gds_device = Step( this_dir + '/netgen-lvs-gds-device'     )
+  netgen_lvs_def  = Step( this_dir + '/netgen-lvs-def'                  )
   magic_antenna   = Step( this_dir + '/open-magic-antenna'              )
   calibre_lvs     = Step( this_dir + '/mentor-calibre-comparison'       )
 
@@ -86,7 +88,7 @@ def construct():
 
   vcs_sim         = Step( 'synopsys-vcs-sim',            default=True )
   rtl_sim         = vcs_sim.clone()
-  gl_sim          = vcs_sim.clone()
+  gl_sim          = Step( this_dir + '/synopsys-vcs-sim-sdf')
   # icarus_sim          = Step( this_dir + '/open-icarus-simulation'          )
   # rtl_sim         = icarus_sim.clone()
   # gl_sim          = icarus_sim.clone()
@@ -131,6 +133,7 @@ def construct():
   g.add_step( constraints     )
   g.add_step( dc              )
   g.add_step( iflow           )
+  g.add_step( floorplan       )
   g.add_step( init            )
   g.add_step( power           )
   g.add_step( place           )
@@ -152,6 +155,7 @@ def construct():
   g.add_step( netgen_lvs_def  )
   g.add_step( magic_gds2spice )
   g.add_step( netgen_lvs_gds  )
+  g.add_step( netgen_lvs_gds_device  )
   g.add_step( calibre_lvs     )
 
   #-----------------------------------------------------------------------
@@ -159,7 +163,7 @@ def construct():
   #-----------------------------------------------------------------------
   
   # Dynamically add edges
-
+  init.extend_inputs(['floorplan.tcl'])
   rtl_sim.extend_inputs(['test_vectors.txt'])
   gl_sim.extend_inputs(['test_vectors.txt'])
 
@@ -183,6 +187,7 @@ def construct():
   g.connect_by_name( adk,             magic_gds2spice )
   g.connect_by_name( adk,             netgen_lvs_def  )
   g.connect_by_name( adk,             netgen_lvs_gds  )
+  g.connect_by_name( adk,             netgen_lvs_gds_device  )
   g.connect_by_name( adk,             calibre_lvs     )
   g.connect_by_name( adk,             pt_timing       )
   g.connect_by_name( adk,             pt_power_rtl    )
@@ -213,6 +218,7 @@ def construct():
   g.connect_by_name( iflow,           signoff         )
   
   # Core place and route flow
+  g.connect_by_name( floorplan,       init            )
   g.connect_by_name( init,            power           )
   g.connect_by_name( power,           place           )
   g.connect_by_name( place,           cts             )
@@ -234,7 +240,9 @@ def construct():
   # LVS using GDS
   g.connect_by_name( gdsmerge,        magic_gds2spice )
   g.connect_by_name( signoff,         netgen_lvs_gds  )
+  g.connect_by_name( signoff,         netgen_lvs_gds_device  )
   g.connect_by_name( magic_gds2spice, netgen_lvs_gds  )
+  g.connect_by_name( magic_gds2spice, netgen_lvs_gds_device  )
 
   # LVS comparision using Calibre
   g.connect_by_name( signoff,         calibre_lvs     )
