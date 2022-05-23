@@ -1,3 +1,7 @@
+`ifndef MPRJ_IO_PADS
+    `define MPRJ_IO_PADS 38
+`endif
+
 module user_proj_example #(
     parameter BITS = 32
 )(
