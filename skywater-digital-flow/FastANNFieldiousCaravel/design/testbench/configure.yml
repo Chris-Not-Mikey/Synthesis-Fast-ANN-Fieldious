@@ -17,7 +17,7 @@ commands:
   - cp SramUnitTb.sv outputs/testbench.sv
   - cp design.vcs.args outputs/design.args
   - cp design.vcs.args.gls outputs/design.args.gls
-  - cp expected_index.txt outputs/expectedIndex.txt
+  - cp expectedIndex.txt outputs/expectedIndex.txt
   - cp internalNodes.txt outputs/internalNodes.txt
   - cp leafNodes.txt outputs/leafNodes.txt
   - cp patches.txt outputs/patches.txt
