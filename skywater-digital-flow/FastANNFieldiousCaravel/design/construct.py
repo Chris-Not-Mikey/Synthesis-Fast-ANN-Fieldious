@@ -33,8 +33,8 @@ def construct():
     'adk'            : adk_name,
     'adk_view'       : adk_view,
     'topographical'  : True,
-    'testbench_name' : 'top_tb', 
-    'saif_instance'  : 'top_tb/dut',
+    'testbench_name' : 'top_wrapper_tb', 
+    'saif_instance'  : 'top_wrapper_tb/dut',
     'dut_name'       : 'dut'
   }
 
