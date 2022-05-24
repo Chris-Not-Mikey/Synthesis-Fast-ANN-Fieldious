@@ -126,240 +126,240 @@ planDesign
 deleteFiller -prefix WELLTAP
 
 
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
 
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
 
 
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
 
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
 
 
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
 
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
 
 
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
 
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
 
 
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
 
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
 
 
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
 
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
 
 
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
 
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
 
 
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
 
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-selectInst acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-selectInst acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-selectInst acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
 
 
-selectInst acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_1__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
 
-createRouteBlk -box $box -layer {li1}
-deselectAll
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
 
-selectInst acc_inst/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
 
-createRouteBlk -box $box -layer {li1}
-deselectAll
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
 
-selectInst acc_inst/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
 
-createRouteBlk -box $box -layer {li1}
-deselectAll
+
+
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
+
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
+
+
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
+
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
+
+
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
+
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
+
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
+
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
+
+
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
+
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
+
+# selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
+
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
+
+# selectInst acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
+
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
+
+# selectInst acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
+
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
+
+# selectInst acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
+
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
+
+
+# selectInst acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_1__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
+
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
+
+# selectInst acc_inst/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
+
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
+
+# selectInst acc_inst/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro
+# set llx [dbGet selected.box_llx]
+# set lly [dbGet selected.box_lly]
+# set urx [dbGet selected.box_urx]
+# set ury [dbGet selected.box_ury]
+# set box "$llx $lly $urx $ury"
+
+# createRouteBlk -box $box -layer {li1}
+# deselectAll
 
 
 
