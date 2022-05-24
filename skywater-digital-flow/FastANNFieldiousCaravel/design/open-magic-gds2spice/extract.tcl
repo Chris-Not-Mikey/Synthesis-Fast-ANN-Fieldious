@@ -1,4 +1,12 @@
 cif istyle sky130(vendor)
+lef read inputs/adk/rtk-tech.lef
+lef read inputs/adk/stdcells.lef
+foreach f [glob -directory inputs *.lef] {
+    lef read $f
+}
+gds noduplicates true
+gds order true
+
 gds flatten true
 gds read ./inputs/design_merged.gds
 load $::env(design_name)
