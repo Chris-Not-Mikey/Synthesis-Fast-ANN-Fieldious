@@ -33,7 +33,9 @@ module user_proj_example #(
     output [`MPRJ_IO_PADS-1:0] io_oeb,
 
     // IRQ
-    output [2:0] irq
+	output [2:0] irq,
+    //user clock
+    input user_clock2
 );
 
 //     wire [`MPRJ_IO_PADS-1:0] io_in;
@@ -43,6 +45,7 @@ module user_proj_example #(
     wire                                                    io_clk;
     wire                                                    io_rst_n;
     wire                                                    clkmux_clk;
+    wire                                                    fastclkmux_clk;
     wire                                                    rstmux_rst_n;
     wire                                                    wbs_mode;
     wire                                                    wbs_debug;
@@ -92,6 +95,7 @@ module user_proj_example #(
     // IRQ
     assign irq = 3'b000;	// Unused
     assign la_data_out = 128'd0;  // Unused
+
     // assign io_oeb = la_data_in[37:0];  // TODO
     // assign io_oeb[17:0] = 18'd0;
     // assign io_oeb[37:18] = {20{1'b1}};
@@ -118,6 +122,14 @@ module user_proj_example #(
     assign io_out[37:35] = 3'd0;
 
 
+    ClockMux fastclockmux_inst (
+	.select  ( 1'b1  ),
+        .clk0    ( io_clk    ),
+        .clk1    ( user_clock2  ),
+        .out_clk ( fastclkmux_clk)
+    );
+	
+	
     ClockMux clockmux_inst (
         .select  ( wbs_mode  ),
         .clk0    ( io_clk    ),
