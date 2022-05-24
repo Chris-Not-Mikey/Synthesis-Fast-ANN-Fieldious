@@ -29,7 +29,7 @@ def construct():
   parameters = {
     'construct_path' : __file__,
     'design_name'    : 'user_proj_example',
-    'clock_period'   : 6.6666666667,
+    'clock_period'   : 10,
     'adk'            : adk_name,
     'adk_view'       : adk_view,
     'topographical'  : True,
