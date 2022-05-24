@@ -64,61 +64,61 @@ floorPlan -s $core_width $core_height \
 
 
 
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  964.4950 3042.0450 R180
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  947.0550 2034.8150 R180
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  951.1250 2548.7850 R180
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  946.8250 1092.4450 R180
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  946.9550 590.2100 R180
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  946.0450 69.9400 R180
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro 1678.2650 3032.5150 R180
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  1682.7300 2554.6200 R180
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  2375.2700 2549.5950 R180
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  2367.6150 3035.7400 R180
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro 303.3050 1094.8600  R0
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 268.2150 2021.5850 R0
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  1669.1800 2002.9400 R180
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  2376.0900 2021.2000 R0
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro 2356.1600 1085.5400 R180
-placeInstance dut/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 1664.535 1098.45 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  964.4950 3042.0450 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  947.0550 2034.8150 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  951.1250 2548.7850 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  946.8250 1092.4450 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  946.9550 590.2100 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  946.0450 69.9400 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro 1678.2650 3032.5150 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  1682.7300 2554.6200 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  2375.2700 2549.5950 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  2367.6150 3035.7400 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro 303.3050 1094.8600  R0
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 268.2150 2021.5850 R0
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  1669.1800 2002.9400 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  2376.0900 2021.2000 R0
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro 2356.1600 1085.5400 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 1664.535 1098.45 R180
 
 
-placeInstance dut/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  1687.545 60.2600 R180
-placeInstance dut/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  1688.3400 578.4950 R180
-placeInstance dut/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro  2352.9350 70.0450 R180
-placeInstance dut/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_1__genblk1_sram_macro  2357.9500 545.6650 R180
+placeInstance acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  1687.545 60.2600 R180
+placeInstance acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  1688.3400 578.4950 R180
+placeInstance acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro  2352.9350 70.0450 R180
+placeInstance acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_1__genblk1_sram_macro  2357.9500 545.6650 R180
 
 
-placeInstance dut/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  230.8300 3046.1100 R180
-placeInstance dut/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro  246.3350 2534.7300 R180
-
-
-
+placeInstance acc_inst/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  230.8300 3046.1100 R180
+placeInstance acc_inst/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro  246.3350 2534.7300 R180
 
 
 
 
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_1__genblk1_sram_macro 
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-addHaloToBlock 5.00  5.00  5.00  5.00 dut/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro
+
+
+
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_1__genblk1_sram_macro 
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+addHaloToBlock 5.00  5.00  5.00  5.00 acc_inst/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro
 
 
 
@@ -126,7 +126,7 @@ addHaloToBlock 5.00  5.00  5.00  5.00 dut/k_best_array_inst/loop_best_array_gen_
 deleteFiller -prefix WELLTAP
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -137,7 +137,7 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -148,7 +148,7 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -159,7 +159,7 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -170,7 +170,7 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -181,7 +181,7 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -192,7 +192,7 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -203,7 +203,7 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -214,7 +214,7 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -225,7 +225,7 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -237,7 +237,7 @@ deselectAll
 
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -248,7 +248,7 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -259,7 +259,7 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -269,58 +269,7 @@ set box "$llx $lly $urx $ury"
 createRouteBlk -box $box -layer {li1}
 deselectAll
 
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-selectInst dut/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-selectInst dut/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-selectInst dut/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
-
-createRouteBlk -box $box -layer {li1}
-deselectAll
-
-selectInst dut/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -331,7 +280,7 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
-selectInst dut/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_1__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -341,7 +290,7 @@ set box "$llx $lly $urx $ury"
 createRouteBlk -box $box -layer {li1}
 deselectAll
 
-selectInst dut/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+selectInst acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
@@ -351,7 +300,58 @@ set box "$llx $lly $urx $ury"
 createRouteBlk -box $box -layer {li1}
 deselectAll
 
-selectInst dut/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro
+selectInst acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+set llx [dbGet selected.box_llx]
+set lly [dbGet selected.box_lly]
+set urx [dbGet selected.box_urx]
+set ury [dbGet selected.box_ury]
+set box "$llx $lly $urx $ury"
+
+createRouteBlk -box $box -layer {li1}
+deselectAll
+
+selectInst acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro
+set llx [dbGet selected.box_llx]
+set lly [dbGet selected.box_lly]
+set urx [dbGet selected.box_urx]
+set ury [dbGet selected.box_ury]
+set box "$llx $lly $urx $ury"
+
+createRouteBlk -box $box -layer {li1}
+deselectAll
+
+selectInst acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro
+set llx [dbGet selected.box_llx]
+set lly [dbGet selected.box_lly]
+set urx [dbGet selected.box_urx]
+set ury [dbGet selected.box_ury]
+set box "$llx $lly $urx $ury"
+
+createRouteBlk -box $box -layer {li1}
+deselectAll
+
+
+selectInst acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_1__loop_width_gen_1__genblk1_sram_macro
+set llx [dbGet selected.box_llx]
+set lly [dbGet selected.box_lly]
+set urx [dbGet selected.box_urx]
+set ury [dbGet selected.box_ury]
+set box "$llx $lly $urx $ury"
+
+createRouteBlk -box $box -layer {li1}
+deselectAll
+
+selectInst acc_inst/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro
+set llx [dbGet selected.box_llx]
+set lly [dbGet selected.box_lly]
+set urx [dbGet selected.box_urx]
+set ury [dbGet selected.box_ury]
+set box "$llx $lly $urx $ury"
+
+createRouteBlk -box $box -layer {li1}
+deselectAll
+
+selectInst acc_inst/k_best_array_inst/loop_best_array_gen_0__best_dist_array_inst/loop_depth_gen_1__loop_width_gen_0__genblk1_sram_macro
 set llx [dbGet selected.box_llx]
 set lly [dbGet selected.box_lly]
 set urx [dbGet selected.box_urx]
