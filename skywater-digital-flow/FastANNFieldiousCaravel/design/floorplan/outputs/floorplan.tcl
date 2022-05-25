@@ -61,6 +61,9 @@ floorPlan -s $core_width $core_height \
 
 # createRouteBlk -layer {li1} -inst sram -cover
 
+# Try blocking metal 5 over full chip
+createRouteBlk -layer {met5}
+
 
 
 
