@@ -62,7 +62,16 @@ floorPlan -s $core_width $core_height \
 # createRouteBlk -layer {li1} -inst sram -cover
 
 # Try blocking metal 5 over full chip
-createRouteBlk -layer {met5} -inst acc_inst -cover
+selectInst acc_inst
+set llx [dbGet selected.box_llx]
+set lly [dbGet selected.box_lly]
+set urx [dbGet selected.box_urx]
+set ury [dbGet selected.box_ury]
+set box "$llx $lly $urx $ury"
+
+createRouteBlk -box $box -layer {met5}
+deselectAll
+
 
 
 
