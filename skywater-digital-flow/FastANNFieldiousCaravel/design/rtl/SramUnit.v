@@ -1913,7 +1913,7 @@ endmodule
 //   end
 
 // endmodule
-// // synopsys translate_on
+// synopsys translate_on
 
 
 
@@ -1989,7 +1989,17 @@ module SyncBit (
       end // always @ (posedge dCLK or `BSV_RESET_EDGE sRST)
 
 
-
+`ifdef BSV_NO_INITIAL_BLOCKS
+`else // not BSV_NO_INITIAL_BLOCKS
+   // synopsys translate_off
+   initial
+      begin
+         sSyncReg  = init ;
+         dSyncReg1 = init ;
+         dSyncReg2 = init ;
+      end // initial begin
+   // synopsys translate_on
+`endif // BSV_NO_INITIAL_BLOCKS
 
 endmodule // BitSync
 
@@ -3168,7 +3178,7 @@ reg [INTERNAL_WIDTH - 1 : 0]  write_data;
 
 always @ (posedge clk) begin 
     if (rst_n == 0) begin
-        wbs_dat_o <= {INTERNAL_WIDTH{1'b0}};
+        wbs_dat_o = {INTERNAL_WIDTH{1'b0}};
     end
     else if (wbs_rd_en_i) begin
         wbs_dat_o = rdata_storage[sender_addr]; //read address is same as write address
@@ -3658,12 +3668,6 @@ module top
 
 );
 
-    logic                                                   load_kdtree_r;
-    logic                                                   load_done_w;
-    logic                                                   fsm_start_r;
-    logic                                                   fsm_done_w;
-    logic                                                   send_best_arr_r;
-    logic                                                   send_done_w;
 
     logic                                                   in_fifo_deq;
     logic [DATA_WIDTH-1:0]                                  in_fifo_rdata;
@@ -3901,24 +3905,6 @@ module top
     logic [LEAF_ADDRW-1:0]                                  computes1_leaf_idx [K-1:0];
 
 
-    always_ff @(posedge clk, negedge rst_n) begin
-        if (~rst_n) begin
-            load_kdtree_r <= '0;
-            fsm_start_r <= '0;
-            send_best_arr_r <= '0;
-            load_done <= '0;
-            fsm_done <= '0;
-            send_done <= '0;
-        end else begin
-            load_kdtree_r <= load_kdtree;
-            fsm_start_r <= fsm_start;
-            send_best_arr_r <= send_best_arr;
-            load_done <= load_done_w;
-            fsm_done <= fsm_done_w;
-            send_done <= send_done_w;
-        end
-    end
-
     MainFSM #(
         .DATA_WIDTH                             (DATA_WIDTH),
         .LEAF_SIZE                              (LEAF_SIZE),
@@ -3931,12 +3917,12 @@ module top
     ) main_fsm_inst (
         .clk                                    (clk),
         .rst_n                                  (rst_n),
-        .load_kdtree                            (load_kdtree_r),
-        .load_done                              (load_done_w),
-        .fsm_start                              (fsm_start_r),
-        .fsm_done                               (fsm_done_w),
-        .send_done                              (send_done_w),
-        .send_best_arr                          (send_best_arr_r),
+        .load_kdtree                            (load_kdtree),
+        .load_done                              (load_done),
+        .fsm_start                              (fsm_start),
+        .fsm_done                               (fsm_done),
+        .send_done                              (send_done),
+        .send_best_arr                          (send_best_arr),
         .agg_receiver_enq                       (agg_receiver_enq),
         .agg_receiver_full_n                    (agg_receiver_full_n),
         .agg_change_fetch_width                 (agg_change_fetch_width),
@@ -4835,6 +4821,125 @@ module wbsCtrl
 endmodule
 
 
+// // OpenRAM SRAM model
+// // Words: 256
+// // Word size: 32
+// // Write size: 8
+
+// module sky130_sram_1kbyte_1rw1r_32x256_8(
+// `ifdef USE_POWER_PINS
+//     vccd1,
+//     vssd1,
+// `endif
+// // Port 0: RW
+//     clk0,csb0,web0,wmask0,addr0,din0,dout0,
+// // Port 1: R
+//     clk1,csb1,addr1,dout1
+//   );
+
+//   parameter NUM_WMASKS = 4 ;
+//   parameter DATA_WIDTH = 32 ;
+//   parameter ADDR_WIDTH = 8 ;
+//   parameter RAM_DEPTH = 1 << ADDR_WIDTH;
+//   // FIXME: This delay is arbitrary.
+//   parameter DELAY = 3 ;
+//   parameter VERBOSE = 0 ; //Set to 0 to only display warnings
+//   parameter T_HOLD = 1 ; //Delay to hold dout value after posedge. Value is arbitrary
+
+// `ifdef USE_POWER_PINS
+//     inout vccd1;
+//     inout vssd1;
+// `endif
+//   input  clk0; // clock
+//   input   csb0; // active low chip select
+//   input  web0; // active low write control
+//   input [NUM_WMASKS-1:0]   wmask0; // write mask
+//   input [ADDR_WIDTH-1:0]  addr0;
+//   input [DATA_WIDTH-1:0]  din0;
+//   output [DATA_WIDTH-1:0] dout0;
+//   input  clk1; // clock
+//   input   csb1; // active low chip select
+//   input [ADDR_WIDTH-1:0]  addr1;
+//   output [DATA_WIDTH-1:0] dout1;
+
+//   reg  csb0_reg;
+//   reg  web0_reg;
+//   reg [NUM_WMASKS-1:0]   wmask0_reg;
+//   reg [ADDR_WIDTH-1:0]  addr0_reg;
+//   reg [DATA_WIDTH-1:0]  din0_reg;
+//   reg [DATA_WIDTH-1:0]  dout0;
+
+
+//   reg [DATA_WIDTH-1:0]    mem [0:RAM_DEPTH-1];
+
+//   // All inputs are registers
+//   always @(posedge clk0)
+//   begin
+//     csb0_reg = csb0;
+//     web0_reg = web0;
+//     wmask0_reg = wmask0;
+//     addr0_reg = addr0;
+//     din0_reg = din0;
+//     #(T_HOLD) dout0 = 32'bx;
+//     if ( !csb0_reg && web0_reg && VERBOSE ) 
+//       $display($time," Reading %m addr0=%b dout0=%b",addr0_reg,mem[addr0_reg]);
+//     if ( !csb0_reg && !web0_reg && VERBOSE )
+//       $display($time," Writing %m addr0=%b din0=%b wmask0=%b",addr0_reg,din0_reg,wmask0_reg);
+//   end
+
+//   reg  csb1_reg;
+//   reg [ADDR_WIDTH-1:0]  addr1_reg;
+//   reg [DATA_WIDTH-1:0]  dout1;
+
+//   // All inputs are registers
+//   always @(posedge clk1)
+//   begin
+//     csb1_reg = csb1;
+//     addr1_reg = addr1;
+//     if (!csb0 && !web0 && !csb1 && (addr0 == addr1))
+//          $display($time," WARNING: Writing and reading addr0=%b and addr1=%b simultaneously!",addr0,addr1);
+//     #(T_HOLD) dout1 = 32'bx;
+//     if ( !csb1_reg && VERBOSE ) 
+//       $display($time," Reading %m addr1=%b dout1=%b",addr1_reg,mem[addr1_reg]);
+//   end
+
+
+
+//   // Memory Write Block Port 0
+//   // Write Operation : When web0 = 0, csb0 = 0
+//   always @ (negedge clk0)
+//   begin : MEM_WRITE0
+//     if ( !csb0_reg && !web0_reg ) begin
+//         if (wmask0_reg[0])
+//                 mem[addr0_reg][7:0] = din0_reg[7:0];
+//         if (wmask0_reg[1])
+//                 mem[addr0_reg][15:8] = din0_reg[15:8];
+//         if (wmask0_reg[2])
+//                 mem[addr0_reg][23:16] = din0_reg[23:16];
+//         if (wmask0_reg[3])
+//                 mem[addr0_reg][31:24] = din0_reg[31:24];
+//     end
+//   end
+
+//   // Memory Read Block Port 0
+//   // Read Operation : When web0 = 1, csb0 = 0
+//   always @ (negedge clk0)
+//   begin : MEM_READ0
+//     if (!csb0_reg && web0_reg)
+//        dout0 <= #(DELAY) mem[addr0_reg];
+//   end
+
+//   // Memory Read Block Port 1
+//   // Read Operation : When web1 = 1, csb1 = 0
+//   always @ (negedge clk1)
+//   begin : MEM_READ1
+//     if (!csb1_reg)
+//        dout1 <= #(DELAY) mem[addr1_reg];
+//   end
+
+// endmodule
+
+
 module ResetMux(
                 select,
                 rst0,
@@ -5554,6 +5659,4 @@ always_ff @(posedge clk, negedge rst_n) begin
   end
 end
 endmodule   // RunningMin
-
-
 
