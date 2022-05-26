@@ -63,11 +63,7 @@ floorPlan -s $core_width $core_height \
 
 # Try blocking metal 5 over full chip
 selectModule acc_inst
-set llx [dbGet selected.box_llx]
-set lly [dbGet selected.box_lly]
-set urx [dbGet selected.box_urx]
-set ury [dbGet selected.box_ury]
-set box "$llx $lly $urx $ury"
+set box "0 0 $core_width $core_height"
 
 createRouteBlk -box $box -layer {met5}
 deselectAll
