@@ -1989,17 +1989,6 @@ module SyncBit (
       end // always @ (posedge dCLK or `BSV_RESET_EDGE sRST)
 
 
-`ifdef BSV_NO_INITIAL_BLOCKS
-`else // not BSV_NO_INITIAL_BLOCKS
-   // synopsys translate_off
-   initial
-      begin
-         sSyncReg  = init ;
-         dSyncReg1 = init ;
-         dSyncReg2 = init ;
-      end // initial begin
-   // synopsys translate_on
-`endif // BSV_NO_INITIAL_BLOCKS
 
 endmodule // BitSync
 
