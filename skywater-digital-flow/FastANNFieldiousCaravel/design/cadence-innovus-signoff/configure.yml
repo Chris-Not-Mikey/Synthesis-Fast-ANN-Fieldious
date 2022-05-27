@@ -64,6 +64,7 @@ parameters:
     - fill-decap.tcl
     - main.tcl
     - antenna_fix.tcl
+    - apply_antenna_fix.tcl 
     - generate-results.tcl
     - reporting.tcl
 
