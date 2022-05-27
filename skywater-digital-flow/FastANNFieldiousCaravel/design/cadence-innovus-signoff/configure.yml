@@ -38,6 +38,8 @@ outputs:
 commands:
   - ln -sf inputs/innovus-foundation-flow
   - innovus -overwrite -64 -nowin -init START.tcl -log logs/run.log
+  - verifyProcessAntenna 
+  - addDiode user_proj_example.antenna.rpt sky130_fd_sc_hd__sdlclkp_4
 
   # Outputs
   - cd outputs
@@ -63,6 +65,7 @@ parameters:
   order:
     - fill-decap.tcl
     - main.tcl
+    - antenna_fix.tcl
     - generate-results.tcl
     - reporting.tcl
 
