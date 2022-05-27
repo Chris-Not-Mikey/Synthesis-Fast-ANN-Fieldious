@@ -33,7 +33,8 @@ module user_proj_example #(
     output [`MPRJ_IO_PADS-1:0] io_oeb,
 
     // IRQ
-	  output [2:0] irq,
+    output [2:0] irq,
+
     //user clock
     input user_clock2
 );
@@ -42,11 +43,14 @@ module user_proj_example #(
     wire [`MPRJ_IO_PADS-1:0] io_out;
     wire [`MPRJ_IO_PADS-1:0] io_oeb;
 
+    wire                                                    clkmux_usrclk;
     wire                                                    io_clk;
     wire                                                    io_rst_n;
     wire                                                    clkmux_clk;
-    wire                                                    fastclkmux_clk;
     wire                                                    rstmux_rst_n;
+    wire                                                    usr_rst_n_sync;
+    wire                                                    wb_rst_n_sync;
+    wire                                                    wbs_usrclk_sel;
     wire                                                    wbs_mode;
     wire                                                    wbs_debug;
     wire                                                    wbs_done;
@@ -121,19 +125,18 @@ module user_proj_example #(
     assign io_out[37:35] = 3'd0;
 
 
-    ClockMux fastclockmux_inst (
-	      .select  ( 1'b1  ),
-        .clk0    ( io_clk    ),
-        .clk1    ( user_clock2  ),
-        .out_clk ( fastclkmux_clk)
+    ClockMux usrclockmux_inst (
+        .select  ( wbs_usrclk_sel ),
+        .clk0    ( io_clk         ),
+        .clk1    ( user_clock2    ),
+        .out_clk ( clkmux_usrclk  )
     );
-	
-	
+
     ClockMux clockmux_inst (
-        .select  ( wbs_mode  ),
-        .clk0    ( io_clk    ),
-        .clk1    ( wb_clk_i  ),
-        .out_clk ( clkmux_clk)
+        .select  ( wbs_mode      ),
+        .clk0    ( clkmux_usrclk ),
+        .clk1    ( wb_clk_i      ),
+        .out_clk ( clkmux_clk    )
     );
 
     ResetMux resetmux_inst (
@@ -141,6 +144,18 @@ module user_proj_example #(
         .rst0    ( io_rst_n     ),
         .rst1    ( ~wb_rst_i    ),
         .out_rst ( rstmux_rst_n )
+    );
+
+    SyncResetA usr_rst_synca_inst (
+        .CLK     (clkmux_clk),
+        .IN_RST  (rstmux_rst_n),
+        .OUT_RST (usr_rst_n_sync)
+    );
+
+    SyncResetA wb_rst_synca_inst (
+        .CLK     (wb_clk_i),
+        .IN_RST  (~wb_rst_i),
+        .OUT_RST (wb_rst_n_sync)
     );
 
     wbsCtrl 
@@ -155,7 +170,7 @@ module user_proj_example #(
     // ) 
     wbsctrl_inst (
         .wb_clk_i                               (wb_clk_i),
-        .wb_rst_i                               (wb_rst_i),
+        .wb_rst_n_i                             (wb_rst_n_sync),
         .wbs_stb_i                              (wbs_stb_i),
         .wbs_cyc_i                              (wbs_cyc_i),
         .wbs_we_i                               (wbs_we_i),
@@ -166,6 +181,7 @@ module user_proj_example #(
         .wbs_dat_o                              (wbs_dat_o),
         .wbs_mode                               (wbs_mode),
         .wbs_debug                              (wbs_debug),
+        .wbs_usrclk_sel                         (wbs_usrclk_sel),
         .wbs_done                               (wbs_done),
         .wbs_cfg_done                           (wbs_cfg_done),
         .wbs_fsm_start                          (wbs_fsm_start),
@@ -209,7 +225,7 @@ module user_proj_example #(
     // ) 
     acc_inst (
         .clk(clkmux_clk),
-        .rst_n(rstmux_rst_n),
+        .rst_n(usr_rst_n_sync),
 
         .load_kdtree(load_kdtree),
         .load_done(load_done),
@@ -282,7 +298,7 @@ module user_proj_example #(
 
     SyncBit wbs_mode_sync (
         .sCLK(wb_clk_i),
-        .sRST(~wb_rst_i),
+        .sRST(wb_rst_n_sync),
         .sEN(1'b1),
         .sD_IN(wbs_mode),
         .dCLK(io_clk),
@@ -291,7 +307,7 @@ module user_proj_example #(
 
     SyncBit wbs_done_sync (
         .sCLK(wb_clk_i),
-        .sRST(~wb_rst_i),
+        .sRST(wb_rst_n_sync),
         .sEN(1'b1),
         .sD_IN(wbs_done),
         .dCLK(io_clk),
@@ -300,7 +316,7 @@ module user_proj_example #(
 
     SyncBit wbs_cfg_done_sync (
         .sCLK(wb_clk_i),
-        .sRST(~wb_rst_i),
+        .sRST(wb_rst_n_sync),
         .sEN(1'b1),
         .sD_IN(wbs_cfg_done),
         .dCLK(io_clk),
@@ -3124,7 +3140,6 @@ module RunningMin (
 				p7_idx_min <= {leaf_idx_in, p7_idx};
 			end
 endmodule
-
 module SortedList (
 	clk,
 	insert,
@@ -3626,6 +3641,29 @@ module SyncPulse (
 		dSyncReg1 = 1'b0;
 		dSyncReg2 = 1'b0;
 		dSyncPulse = 1'b0;
+	end
+endmodule
+module SyncResetA (
+	IN_RST,
+	CLK,
+	OUT_RST
+);
+	parameter RSTDELAY = 1;
+	input CLK;
+	input IN_RST;
+	output wire OUT_RST;
+	reg [RSTDELAY:0] reset_hold;
+	wire [RSTDELAY + 1:0] next_reset = {reset_hold, ~1'b0};
+	assign OUT_RST = reset_hold[RSTDELAY];
+	always @(posedge CLK or negedge IN_RST)
+		if (IN_RST == 1'b0)
+			reset_hold <= {RSTDELAY + 1 {1'b0}};
+		else
+			reset_hold <= next_reset[RSTDELAY:0];
+	initial begin
+		#(0)
+			;
+		reset_hold = {RSTDELAY + 1 {~1'b0}};
 	end
 endmodule
 module top (
@@ -4463,7 +4501,7 @@ module top (
 endmodule
 module wbsCtrl (
 	wb_clk_i,
-	wb_rst_i,
+	wb_rst_n_i,
 	wbs_stb_i,
 	wbs_cyc_i,
 	wbs_we_i,
@@ -4472,6 +4510,7 @@ module wbsCtrl (
 	wbs_adr_i,
 	wbs_ack_o,
 	wbs_dat_o,
+	wbs_usrclk_sel,
 	wbs_mode,
 	wbs_debug,
 	wbs_done,
@@ -4510,7 +4549,7 @@ module wbsCtrl (
 	parameter NUM_LEAVES = 64;
 	parameter LEAF_ADDRW = $clog2(NUM_LEAVES);
 	input wire wb_clk_i;
-	input wire wb_rst_i;
+	input wire wb_rst_n_i;
 	input wire wbs_stb_i;
 	input wire wbs_cyc_i;
 	input wire wbs_we_i;
@@ -4519,6 +4558,7 @@ module wbsCtrl (
 	input wire [31:0] wbs_adr_i;
 	output wire wbs_ack_o;
 	output wire [31:0] wbs_dat_o;
+	output reg wbs_usrclk_sel;
 	output reg wbs_mode;
 	output reg wbs_debug;
 	output reg wbs_done;
@@ -4554,6 +4594,7 @@ module wbsCtrl (
 	localparam WBS_LOAD_DONE_ADDR = 32'h30000014;
 	localparam WBS_SEND_DONE_ADDR = 32'h30000018;
 	localparam WBS_CFG_DONE_ADDR = 32'h3000001c;
+	localparam WBS_USRCLK_SEL_ADDR = 32'h30000020;
 	localparam WBS_QUERY_ADDR = 32'h30010000;
 	localparam WBS_LEAF_ADDR = 32'h30020000;
 	localparam WBS_BEST_ADDR = 32'h30030000;
@@ -4579,8 +4620,8 @@ module wbsCtrl (
 	assign wbs_valid = wbs_cyc_i & wbs_stb_i;
 	assign wbs_ack_o = wbs_ack_o_q;
 	assign wbs_dat_o = wbs_dat_o_q;
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			currState <= 32'd0;
 		else
 			currState <= nextState;
@@ -4677,13 +4718,13 @@ module wbsCtrl (
 			end
 		endcase
 	end
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			wbs_valid_q <= 1'sb0;
 		else
 			wbs_valid_q <= wbs_valid;
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i) begin
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i) begin
 			wbs_we_i_q <= 1'sb0;
 			wbs_sel_i_q <= 1'sb0;
 			wbs_dat_i_q <= 1'sb0;
@@ -4695,67 +4736,72 @@ module wbsCtrl (
 			wbs_dat_i_q <= wbs_dat_i;
 			wbs_adr_i_q <= wbs_adr_i;
 		end
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			wbs_dat_i_lower_q <= 1'sb0;
 		else
 			wbs_dat_i_lower_q <= wbs_dat_i_q;
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			wbs_ack_o_q <= 1'sb0;
 		else
 			wbs_ack_o_q <= wbs_ack_o_d;
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			wbs_dat_o_q <= 1'sb0;
 		else if (wbs_dat_o_d_valid)
 			wbs_dat_o_q <= wbs_dat_o_d;
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			wbs_mode <= 1'sb0;
 		else if ((wbs_valid_q & wbs_we_i_q) & (wbs_adr_i_q == WBS_MODE_ADDR))
 			wbs_mode <= wbs_dat_i_q[0];
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			wbs_debug <= 1'sb0;
 		else if ((wbs_valid_q & wbs_we_i_q) & (wbs_adr_i_q == WBS_DEBUG_ADDR))
 			wbs_debug <= wbs_dat_i_q[0];
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			wbs_done <= 1'sb0;
 		else if ((wbs_valid_q & wbs_we_i_q) & (wbs_adr_i_q == WBS_DONE_ADDR))
 			wbs_done <= wbs_dat_i_q[0];
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			wbs_fsm_start <= 1'sb0;
 		else if ((wbs_valid_q & wbs_we_i_q) & (wbs_adr_i_q == WBS_FSM_START_ADDR))
 			wbs_fsm_start <= 1'b1;
 		else
 			wbs_fsm_start <= 1'b0;
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			wbs_fsm_done <= 1'sb0;
 		else if ((wbs_valid_q & wbs_we_i_q) & (wbs_adr_i_q == WBS_FSM_DONE_ADDR))
 			wbs_fsm_done <= 1'b0;
 		else if (acc_fsm_done)
 			wbs_fsm_done <= 1'b1;
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			wbs_load_done <= 1'sb0;
 		else if ((wbs_valid_q & wbs_we_i_q) & (wbs_adr_i_q == WBS_LOAD_DONE_ADDR))
 			wbs_load_done <= 1'b0;
 		else if (acc_load_done)
 			wbs_load_done <= 1'b1;
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			wbs_send_done <= 1'sb0;
 		else if ((wbs_valid_q & wbs_we_i_q) & (wbs_adr_i_q == WBS_SEND_DONE_ADDR))
 			wbs_send_done <= 1'b0;
 		else if (acc_send_done)
 			wbs_send_done <= 1'b1;
-	always @(posedge wb_clk_i or posedge wb_rst_i)
-		if (wb_rst_i)
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
 			wbs_cfg_done <= 1'sb0;
 		else if ((wbs_valid_q & wbs_we_i_q) & (wbs_adr_i_q == WBS_CFG_DONE_ADDR))
 			wbs_cfg_done <= wbs_dat_i_q[0];
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i)
+			wbs_usrclk_sel <= 1'sb0;
+		else if ((wbs_valid_q & wbs_we_i_q) & (wbs_adr_i_q == WBS_USRCLK_SEL_ADDR))
+			wbs_usrclk_sel <= wbs_dat_i_q[0];
 endmodule
