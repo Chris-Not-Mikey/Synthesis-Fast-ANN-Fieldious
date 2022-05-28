@@ -372,6 +372,7 @@ deselectAll
 
 # TODO: Move to somewhere more appropriate
 setOptMode -drcMargin 0.150
-
+setOptMode -fixFanoutLoad    true 
+setOptMode -bufferAssignNets true
 
 
