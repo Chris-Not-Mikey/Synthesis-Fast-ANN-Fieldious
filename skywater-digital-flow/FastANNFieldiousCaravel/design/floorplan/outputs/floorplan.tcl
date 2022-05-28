@@ -370,5 +370,8 @@ createRouteBlk -box $box -layer {li1}
 deselectAll
 
 
+# TODO: Move to somewhere more appropriate
+setOptMode -drcMargin 0.150
+
 
 
