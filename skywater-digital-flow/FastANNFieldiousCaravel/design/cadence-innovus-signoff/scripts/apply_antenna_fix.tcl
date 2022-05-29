@@ -1,2 +1,2 @@
-verifyProcessAntenna
-addDiode user_proj_example.antenna.rpt sky130_fd_sc_hd__a22o_2
+# verifyProcessAntenna
+# addDiode user_proj_example.antenna.rpt sky130_fd_sc_hd__diode
