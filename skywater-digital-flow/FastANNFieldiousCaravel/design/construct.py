@@ -52,6 +52,7 @@ def construct():
 
 
   # Custom steps
+  custom_flowstep = Step( this_dir + '/custom-flowstep'                 ) 
 
   rtl             = Step( this_dir + '/rtl'                             )
   constraints     = Step( this_dir + '/constraints'                     )
@@ -141,6 +142,7 @@ def construct():
   g.add_step( constraints     )
   g.add_step( syn_compile     )
   g.add_step( dc              )
+  g.add_step( custom_flowstep )
   g.add_step( iflow           )
   g.add_step( pin_placement   )
   g.add_step( floorplan       )
@@ -173,6 +175,7 @@ def construct():
   #-----------------------------------------------------------------------
   
   # Dynamically add edges
+  iflow.extend_inputs ( custom_flowstep.all_outputs()  )
 
   rtl_sim.extend_inputs(['sky130_sram_1kbyte_1rw1r_32x256_8.v'])
   rtl_sim.extend_inputs(['expectedIndex.txt'])
@@ -274,6 +277,8 @@ def construct():
   g.connect_by_name( dc,              place           )
   g.connect_by_name( dc,              cts             )
 
+  g.connect_by_name( custom_flowstep, iflow           )
+  
   g.connect_by_name( iflow,           init            )
   g.connect_by_name( iflow,           power           )
   g.connect_by_name( iflow,           place           )
