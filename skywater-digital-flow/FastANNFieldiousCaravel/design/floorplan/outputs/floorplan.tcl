@@ -45,10 +45,10 @@ set core_margin_l [expr ([llength $pwr_net_list] * ($savedvars(p_ring_width) + $
 # density).
 #
 
-floorPlan -s $core_width $core_height \
+floorPlan -d $core_width $core_height \
              $core_margin_l $core_margin_b $core_margin_r $core_margin_t
 
-# setFlipping s
+setFlipping s
 
 # Use automatic floorplan synthesis to pack macros (e.g., SRAMs) together
 
