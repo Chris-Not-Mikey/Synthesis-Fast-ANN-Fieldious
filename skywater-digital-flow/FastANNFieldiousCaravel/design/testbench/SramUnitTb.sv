@@ -81,6 +81,8 @@ module top_wrapper_tb();
 
 
 
+    supply0 vssd1;
+    supply1 vccd1;
 
 
     user_proj_example  #(
@@ -88,6 +90,11 @@ module top_wrapper_tb();
         .BITS(32)
        
       ) dut(
+        `ifdef USE_POWER_PINS
+        .vccd1(vccd1),	// User area 1 1.8V supply
+        .vssd1(vssd1),	// User area 1 digital ground
+        `endif
+
         .wb_clk_i(wb_clk_i),
         .wb_rst_i(wb_rst_i), //Check this
         .wbs_stb_i(wbs_stb_i),
@@ -840,5 +847,12 @@ module top_wrapper_tb();
         $dumpfile("dump.vcd");
         $dumpvars;
     end
+
+    `ifdef GL
+    initial begin
+        $sdf_annotate("inputs/design.sdf", dut);
+    end
+    `endif
+
 
 endmodule
