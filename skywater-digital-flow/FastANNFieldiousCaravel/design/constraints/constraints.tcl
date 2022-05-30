@@ -20,7 +20,7 @@ set ioclockmux_name   ideal_mux_clock_io
 
 
 create_clock -name ${clock_name}     -period ${clock_period} [get_ports "wb_clk_i"]
-create_clock -name ${ioclock_name}   -period ${clock_period} [get_ports "io_in[34]"]
+create_clock -name ${ioclock_name}   -period ${clock_period} [get_ports "io_in[13]"]
 create_clock -name ${ideal_user_clock2}   -period ${clock_period} [get_ports "user_clock2"]
 create_clock -name ${userclockmux_name} -period ${clock_period} [get_pins usrclockmux_inst/out_clock]
 create_clock -name ${ioclockmux_name} -period ${clock_period} [get_pins clockmux_inst/out_clock]
