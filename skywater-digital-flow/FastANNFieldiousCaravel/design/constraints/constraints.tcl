@@ -11,12 +11,28 @@
 # is too large the tools will have no trouble but you will get a very
 # conservative implementation.
 
-set clock_net  wb_clk_i
+#set clock_net  wb_clk_i
 set clock_name ideal_clock
+set ioclock_name   ideal_clock_io
+set userclock_name ideal_user_clock2
+set userclockmux_name ideal_mux_user_clock2
+set ioclockmux_name   ideal_mux_clock_io
 
-create_clock -name ${clock_name} \
-             -period 20 \
-             [get_ports ${clock_net}]
+
+create_clock -name ${clock_name}     -period ${clock_period} [get_ports "wb_clk_i"]
+create_clock -name ${ioclock_name}   -period ${clock_period} [get_ports "io_in[34]"]
+create_clock -name ${ideal_user_clock2}   -period ${clock_period} [get_ports "user_clock2"]
+create_clock -name ${userclockmux_name} -period ${clock_period} [get_pins usrclockmux_inst/out_clock]
+create_clock -name ${ioclockmux_name} -period ${clock_period} [get_pins clockmux_inst/out_clock]
+
+set_clock_groups -asynchronous \
+                 -group [get_clocks ${clock_name}] \
+                 -group [get_clocks ${userclock_name}] \
+                 -group [get_clocks ${ioclock_name}]
+
+# create_clock -name ${clock_name} \
+#              -period ${clock_period} \
+#              [get_ports ${clock_net}]
 
 # This constraint sets the load capacitance in picofarads of the
 # output pins of your design.
@@ -35,11 +51,11 @@ set_driving_cell -no_design_rule \
 # set_input_delay constraints for input ports
 # Make this non-zero to avoid hold buffers on input-registered designs
 
-set_input_delay -clock ${clock_name} [expr 20/2.0] [remove_from_collection [all_inputs] [get_ports $clock_net]]
+set_input_delay -clock ${clock_name} [expr ${clock_period}/2.0] [remove_from_collection [all_inputs] [get_ports $clock_net]]
 
 # set_output_delay constraints for output ports
 
-set_output_delay -clock ${clock_name} 0 [all_outputs]
+set_output_delay -clock ${clock_name} [expr ${clock_period} * 0.2] [all_outputs]
 
 # Make all signals limit their fanout
 
@@ -47,7 +63,7 @@ set_max_fanout 20 $dc_design_name
 
 # Make all signals meet good slew
 
-set_max_transition [expr 0.25*20] $dc_design_name
+set_max_transition [expr 0.25*${clock_period}] $dc_design_name
 
 #set_input_transition 1 [all_inputs]
 #set_max_transition 10 [all_outputs]
