@@ -99,30 +99,43 @@ module user_proj_example #(
     // IRQ
     assign irq = 3'b000;	// Unused
     assign la_data_out = 128'd0;  // Unused
-    // assign io_oeb = la_data_in[37:0];  // TODO
-    // assign io_oeb[17:0] = 18'd0;
-    // assign io_oeb[37:18] = {20{1'b1}};
-    assign io_oeb[17:0] = {18{1'b1}};
-    assign io_oeb[37:18] = {20{1'b0}};
 
     // define all IO pin locations
-    assign io_clk = io_in[0];
-    assign io_rst_n = io_in[1];
-    assign in_fifo_wenq = io_in[2];
-    assign in_fifo_wdata = io_in[13:3];
-    assign out_fifo_deq = io_in[14];
+    assign in_fifo_wenq = io_in[0];
+    assign in_fifo_wdata = io_in[11:1];
+    assign io_out[11:0] = 12'd0;
+    assign io_oeb[12:0] = {12{1'b1}};
+    assign io_out[12] = in_fifo_wfull_n;
+    assign io_oeb[12] = 1'b0;
+
+    assign io_clk = io_in[13];
+    assign io_rst_n = io_in[14];
+    assign io_out[14:13] = 2'd0;
+    assign io_oeb[14:13] = {2{1'b1}};
+
     assign fsm_start = io_in[15];
     assign send_best_arr = io_in[16];
     assign load_kdtree = io_in[17];
-    assign io_out[18] = in_fifo_wfull_n;
-    assign io_out[29:19] = out_fifo_rdata;
-    assign io_out[30] = out_fifo_rempty_n;
-    assign io_out[31] = fsm_done;
-    assign io_out[32] = wbs_done_synced;
-    assign io_out[33] = wbs_busy_synced;
-    assign io_out[34] = wbs_cfg_done_synced;
-    assign io_out[17:0] = 18'd0;
-    assign io_out[37:35] = 3'd0;
+    assign io_out[17:15] = 3'd0;
+    assign io_oeb[17:15] = {3{1'b1}};
+    assign io_out[18] = load_done;
+    assign io_out[19] = fsm_done;
+    assign io_out[20] = send_done;
+    assign io_out[21] = wbs_done_synced;
+    assign io_out[22] = wbs_busy_synced;
+    assign io_out[23] = wbs_cfg_done_synced;
+    assign io_oeb[23:18] = {6{1'b0}};
+
+	// unused
+	assign io_out[24] = 1'b0;
+    assign io_oeb[24] = 1'b0;
+
+    assign out_fifo_deq = io_in[25];
+    assign io_out[25] = 1'b0;
+    assign io_oeb[25] = 1'b1;
+    assign io_out[36:26] = out_fifo_rdata;
+    assign io_out[37] = out_fifo_rempty_n;
+    assign io_oeb[37:26] = {12{1'b0}};
 
 
     ClockMux usrclockmux_inst (
@@ -731,7 +744,6 @@ module internal_node (
 	wdata,
 	patch_in,
 	patch_in_two,
-	patch_out,
 	valid_left,
 	valid_right,
 	valid_left_two,
@@ -748,7 +760,6 @@ module internal_node (
 	input [STORAGE_WIDTH - 1:0] wdata;
 	input [DATA_WIDTH - 1:0] patch_in;
 	input [DATA_WIDTH - 1:0] patch_in_two;
-	output wire [DATA_WIDTH - 1:0] patch_out;
 	output wire valid_left;
 	output wire valid_right;
 	output wire valid_left_two;
@@ -807,7 +818,6 @@ module internal_node (
 	assign valid_right = !comparison && valid;
 	assign valid_left_two = comparison_two && valid_two;
 	assign valid_right_two = !comparison_two && valid_two;
-	assign patch_out = patch_in;
 	assign rdata = {median, 8'b00000000, idx};
 endmodule
 module internal_node_tree (
