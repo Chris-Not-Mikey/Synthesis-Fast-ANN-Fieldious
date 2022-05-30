@@ -61,12 +61,6 @@ setFlipping s
 
 # createRouteBlk -layer {li1} -inst sram -cover
 
-# Try blocking metal 5 over full chip
-selectModule acc_inst
-set box "0 0 $core_width $core_height"
-
-createRouteBlk -box $box -layer {met5}
-deselectAll
 
 
 
@@ -74,13 +68,13 @@ deselectAll
 
 
 
-placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  944.7700 2982.8700 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  951.1250 2982.8700 R180
 placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_0__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  947.0550 1949.3400 R180
 placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  951.1250 2476.4600 R180
 placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_1__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  946.8250 1137.9500 R180
 placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  946.9550 617.5100 R180
 placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_2__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 946.0450 69.9400 R180
-placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro 1638.8150 2986.4900 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro 1629.7300 2986.4900 R180
 placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_3__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  1636.7050 2462.5700 R180
 placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  2276.6450 2464.1200 R180
 placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_4__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  2268.9900 2976.5650 R180
@@ -89,7 +83,7 @@ placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_5__ram_patch_inst/loop_d
 placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  1629.7300 1970.0650 R180
 placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_6__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  2278.9850 1966.5950 R0
 placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro 2283.4750 1167.4450 R180
-placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 1636.2700 1143.9500 R180
+placeInstance acc_inst/leaf_mem_inst/loop_ram_patch_gen_7__ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro 1642.0450 1143.9500 R180
 
 placeInstance acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_0__genblk1_sram_macro  1642.0450 78.4600 R180
 placeInstance acc_inst/qp_mem_inst/ram_patch_inst/loop_depth_gen_0__loop_width_gen_1__genblk1_sram_macro  1648.8900 615.7950 R180
