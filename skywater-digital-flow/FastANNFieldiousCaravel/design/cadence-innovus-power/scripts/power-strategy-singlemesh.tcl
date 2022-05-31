@@ -180,7 +180,7 @@ setPlaceMode -prerouteAsObs {5}
 
 # Try blocking metal 5 over full chip
 selectModule acc_inst
-set box "30 30.5 2830 3429.5"
+set box "31 31 2830 3429"
 
 createRouteBlk -box $box -layer {met5}
 deselectAll
