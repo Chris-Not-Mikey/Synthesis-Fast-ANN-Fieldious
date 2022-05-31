@@ -232,8 +232,8 @@ module top_wrapper_tb();
                 $finish;
             end
             
-            received_idx_data_file = $fopen("received_idx.txt", "w");
-            received_dist_data_file = $fopen("received_dist.txt", "w");
+            received_idx_data_file = $fopen("received_idx.txt", "a");
+	    received_dist_data_file = $fopen("received_dist.txt", "a");
         
             $display("Starting new image");
 
@@ -370,10 +370,10 @@ module top_wrapper_tb();
             
             for(int i=0; i<NUM_QUERYS; i=i+1) begin
                 $fwrite(received_dist_data_file, "%d\n", received_dist[i]);
-                // if (expected_idx[i] != received_dist[i])
-                //     $display("mismatch %d: expected: %d, received %d", i, expected_idx[i], received_dist[i]);
-                // else
-                //     $display("match %d: expected: %d, received %d", i, expected_idx[i], received_dist[i]);
+                if (expected_idx[i] != received_dist[i])
+                    $display("mismatch %d: expected: %d, received %d", i, expected_idx[i], received_dist[i]);
+//                 else
+//                     $display("match %d: expected: %d, received %d", i, expected_idx[i], received_dist[i]);
             end
 
             $display("===============Runtime Summary===============");
