@@ -868,6 +868,8 @@ module top_wrapper_tb();
     initial begin
         $dumpfile("dump.vcd");
         $dumpvars;
+	#166780000;
+        $finish(2);
     end
 
     `ifdef GL
