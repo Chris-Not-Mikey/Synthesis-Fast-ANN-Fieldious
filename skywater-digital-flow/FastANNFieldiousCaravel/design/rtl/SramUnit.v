@@ -104,7 +104,7 @@ module user_proj_example #(
     assign in_fifo_wenq = io_in[0];
     assign in_fifo_wdata = io_in[11:1];
     assign io_out[11:0] = 12'd0;
-    assign io_oeb[12:0] = {12{1'b1}};
+    assign io_oeb[11:0] = {12{1'b1}};
     assign io_out[12] = in_fifo_wfull_n;
     assign io_oeb[12] = 1'b0;
 

@@ -62,9 +62,10 @@ commands:
 parameters:
   order:
     - fill-decap.tcl
-    - main.tcl
+    - fix_drc.tcl
     - antenna_fix.tcl
     - apply_antenna_fix.tcl 
+    - main.tcl
     - generate-results.tcl
     - reporting.tcl
 
