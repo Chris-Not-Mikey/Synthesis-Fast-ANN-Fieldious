@@ -370,9 +370,9 @@ module top_wrapper_tb();
             
             for(int i=0; i<NUM_QUERYS; i=i+1) begin
                 $fwrite(received_dist_data_file, "%d\n", received_dist[i]);
-                if (expected_idx[i] != received_dist[i])
-                    $display("mismatch %d: expected: %d, received %d", i, expected_idx[i], received_dist[i]);
-//                 else
+//                 if (expected_idx[i] != received_dist[i])
+//                     $display("mismatch %d: expected: %d, received %d", i, expected_idx[i], received_dist[i]);
+// //                 else
 //                     $display("match %d: expected: %d, received %d", i, expected_idx[i], received_dist[i]);
             end
 
