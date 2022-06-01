@@ -17,7 +17,7 @@
 # set core_density_target 0.60; # Placement density of 70% is reasonable
 
 set core_width  2860;  # Based on 372 lecture (slight increase from before)
-set core_height 3460;  # Based on 372 lecture (slight increase from before)
+set core_height 3470;  # Based on 372 lecture (slight increase from before)
 
 # Make room in the floorplan for the core power ring
 
