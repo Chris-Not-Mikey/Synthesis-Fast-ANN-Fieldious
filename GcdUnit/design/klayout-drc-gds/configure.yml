@@ -1,0 +1,31 @@
+#=========================================================================
+# DRC using Klayout
+#=========================================================================
+# Author : Can Wang 
+# Date   : June 1st, 2022
+#
+
+name: klayout-drc-gds
+
+#-------------------------------------------------------------------------
+# Inputs and Outputs
+#-------------------------------------------------------------------------
+inputs:
+  - adk
+  - design_merged.gds
+
+outputs:
+  - drc_results.log
+
+#-------------------------------------------------------------------------
+# Parameters
+#-------------------------------------------------------------------------
+
+parameters:
+  design_name: undefined
+
+commands:
+  - ./klayout_config.sh
+  - git clone https://github.com/efabless/mpw_precheck.git
+  - cp ./mpw_precheck/checks/tech-files/sky130A_mr.drc ./drc_sky130.drc
+  - klayout -b -rd input=./inputs/design_merged.gds -rd report=sky130_drc.txt -r drc_sky130.drc
