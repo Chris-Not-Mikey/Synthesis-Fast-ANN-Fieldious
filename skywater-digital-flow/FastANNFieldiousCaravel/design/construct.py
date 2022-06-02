@@ -29,7 +29,7 @@ def construct():
   parameters = {
     'construct_path' : __file__,
     'design_name'    : 'user_proj_example',
-    'clock_period'   : 20,
+    'clock_period'   : 5,
     'adk'            : adk_name,
     'adk_view'       : adk_view,
     'topographical'  : True,
@@ -60,6 +60,7 @@ def construct():
   sram            = Step( this_dir + '/sram'                            )
   pin_placement   = Step( this_dir + '/pin-placement'                   )
   floorplan       = Step( this_dir + '/floorplan'                       )
+  path_groups     = Step( this_dir + '/path-groups'                     )
   syn_compile     = Step( this_dir + '/synopsys-dc-compile'             )
 
   # Power node is custom because power and gnd pins are named differently in
@@ -146,6 +147,7 @@ def construct():
   g.add_step( iflow           )
   g.add_step( pin_placement   )
   g.add_step( floorplan       )
+  g.add_step( path_groups     )
   g.add_step( init            )
   g.add_step( power           )
   g.add_step( place           )
@@ -207,7 +209,7 @@ def construct():
   for step in [iflow, init, power, place, cts, postcts_hold, route, postroute, signoff]:
     step.extend_inputs(['sky130_sram_1kbyte_1rw1r_32x256_8_TT_1p8V_25C.lib', 'sky130_sram_1kbyte_1rw1r_32x256_8.lef'])
 
-  init.extend_inputs(['floorplan.tcl', 'pin-assignments.tcl'])
+  init.extend_inputs(['floorplan.tcl', 'pin-assignments.tcl', 'make-path-groups.tcl'])
   dc.extend_inputs(['compile.tcl'])
   # Connect by name
 
@@ -291,6 +293,7 @@ def construct():
   # Core place and route flow
   g.connect_by_name( floorplan,       init            )
   g.connect_by_name( pin_placement,   init            )
+  g.connect_by_name( path_groups,     init            )
   g.connect_by_name( init,            power           )
   g.connect_by_name( power,           place           )
   g.connect_by_name( place,           cts             )

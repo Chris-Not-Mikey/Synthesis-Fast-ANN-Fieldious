@@ -1,0 +1,5 @@
+name: make-path-groups
+
+outputs:
+  - make-path-groups.tcl
+
