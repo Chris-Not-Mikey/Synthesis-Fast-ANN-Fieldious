@@ -83,12 +83,12 @@ module top_wrapper_tb();
     supply0 vssd1;
     supply1 vccd1;
 
-    assign io_in[0] = in_fifo_wenq;
-    assign io_in[11:1] = in_fifo_wdata;
-    assign in_fifo_wfull_n = io_out[12];
+    assign io_in[0] = io_clk;
+    assign io_in[1] = io_rst_n;
 
-    assign io_in[13] = io_clk;
-    assign io_in[14] = io_rst_n;
+    assign io_in[2] = in_fifo_wenq;
+    assign io_in[13:3] = in_fifo_wdata;
+    assign in_fifo_wfull_n = io_out[14];
 
     assign io_in[15] = fsm_start;
     assign io_in[16] = send_best_arr;
@@ -152,14 +152,14 @@ module top_wrapper_tb();
     initial begin 
         wb_clk_i = 0;
         forever begin
-            #12.5 wb_clk_i = ~wb_clk_i;
+            #50 wb_clk_i = ~wb_clk_i;
         end 
     end
 
     initial begin 
         io_clk = 0; //Our clock is IO pin1
         forever begin
-            #10 io_clk = ~io_clk;
+            #5 io_clk = ~io_clk;
         end 
     end
 

@@ -26,37 +26,44 @@ resetPathGroupOptions
 set_interactive_constraint_modes [all_constraint_modes -active] 
 
 
-set clock_period 20
+set clock_period 10
 
 set wbclock_net  wb_clk_i
 set wbclock_new_name ideal_clock
 
-set ioclock_net io_in[13]
+set ioclock_net io_in[0]
 set ioclock_new_name   ideal_clock_io
 
 set userclock2_net user_clock2
 set userclock2_new_name ideal_user_clock2
 
-set userclockmux_new_name ideal_mux_user_clock
-set clockmux_new_name   ideal_mux_clock
+# set userclockmux_new_name ideal_mux_user_clock
+# set clockmux_new_name   ideal_mux_clock
 
-set_max_transition 0.04 [get_lib_pins *addr0*]
-set_max_transition 0.04 [get_lib_pins *mask*]
-
-
+# set_max_transition 0.04 [get_lib_pins *addr0*]
+# set_max_transition 0.04 [get_lib_pins *mask*]
 
 
 
-create_clock -name ${wbclock_new_name}     -period ${clock_period} [get_ports "wb_clk_i"]
-create_clock -name ${ioclock_new_name}   -period ${clock_period} [get_ports "io_in[13]"]
+
+
+create_clock -name ${wbclock_new_name}     -period 100 [get_ports "wb_clk_i"]
+create_clock -name ${ioclock_new_name}   -period ${clock_period} [get_ports "io_in[0]"]
 create_clock -name ${userclock2_new_name}   -period ${clock_period} [get_ports "user_clock2"]
-create_clock -name ${userclockmux_new_name} -period ${clock_period} [get_pins usrclockmux_inst/out_clk]
-create_clock -name ${clockmux_new_name} -period ${clock_period} [get_pins clockmux_inst/out_clk]
+# create_generated_clock -name ${userclockmux_name} [get_pins usrclockmux_inst/out_clk]
+# create_generated_clock -name ${clockmux_name} [get_pins clockmux_inst/out_clk]
+
+set_clock_groups -logically_exclusive \
+                 -group [get_clocks ${userclock2_new_name}] \
+                 -group [get_clocks ${ioclock_new_name}]
 
 set_clock_groups -asynchronous \
                  -group [get_clocks ${wbclock_new_name}] \
-                 -group [get_clocks ${userclock2_new_name}] \
                  -group [get_clocks ${ioclock_new_name}]
+
+set_clock_groups -asynchronous \
+                 -group [get_clocks ${wbclock_new_name}] \
+                 -group [get_clocks ${userclock2_new_name}]
 
 
 
@@ -120,8 +127,8 @@ if { $macros != "" } {
   setPathGroupOptions Macro2All -effortLevel high
 }
 
-if { $regs != "" } {
-  setPathGroupOptions Reg2Reg -effortLevel high
-}
+# if { $regs != "" } {
+#   setPathGroupOptions Reg2Reg -effortLevel high
+# }
 
 
