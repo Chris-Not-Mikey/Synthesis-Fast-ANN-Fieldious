@@ -24,27 +24,31 @@ set userclockmux_name ideal_mux_user_clock
 set clockmux_name   ideal_mux_clock
 
 
-create_clock -name ${wbclock_name}     -period 100 [get_ports "wb_clk_i"]
-create_clock -name ${ioclock_name}   -period ${clock_period} [get_ports "io_in[0]"]
-create_clock -name ${userclock2_name}   -period ${clock_period} [get_ports "user_clock2"]
-# create_generated_clock -name ${userclockmux_name} [get_pins usrclockmux_inst/out_clk]
-# create_generated_clock -name ${clockmux_name} [get_pins clockmux_inst/out_clk]
+set usr_mux_clk1 ideal_mux_user_clock1
+set usr_mux_clk2 ideal_mux_user_clock2
+set mux_clk1   ideal_mux_clock1
+set mux_clk2   ideal_mux_clock2
+set clockmux_name_3   ideal_mux_clock3
+set clockmux_name_4   ideal_mux_clock4
 
-set_clock_groups -logically_exclusive \
-                 -group [get_clocks ${userclock2_name}] \
-                 -group [get_clocks ${ioclock_name}]
 
-set_clock_groups -asynchronous \
-                 -group [get_clocks ${wbclock_name}] \
-                 -group [get_clocks ${ioclock_name}]
+create_clock -name ${wbclock_name}  -period ${clock_period} [get_ports "wb_clk_i"] 
+create_clock -name ${ioclock_name}  -period ${clock_period} [get_ports "io_in[0]"] 
+create_clock -name ${userclock2_name}   -period ${clock_period} [get_ports "user_clock2"] 
 
-set_clock_groups -asynchronous \
-                 -group [get_clocks ${wbclock_name}] \
-                 -group [get_clocks ${userclock2_name}]
+#FIRST MUX
+create_generated_clock -name ${usr_mux_clk1} -source [get_ports "user_clock2"] -add -master_clock ${userclock2_name} -divide_by 1 usrclockmux_inst/out_clk
+create_generated_clock -name ${usr_mux_clk2} -source [get_ports "io_in[0]"] -add -master_clock ${ioclock_name}  -divide_by 1 usrclockmux_inst/out_clk
+set_clock_groups -logically_exclusive -group [get_clocks "ideal_mux_user_clock1"]  -group [get_clocks "ideal_mux_user_clock2"]
 
-# create_clock -name ${wbclock_name} \
-#              -period ${clock_period} \
-#              [get_ports ${clock_net}]
+#SECOND MUX
+create_generated_clock -name ${mux_clk1} -source [get_ports "wb_clk_i"] -add -master_clock ${wbclock_name} -divide_by 1 clockmux_inst/out_clk
+# Pick more aggressive gen clock
+create_generated_clock -name ${mux_clk2} -source [get_pins "usrclockmux_inst/out_clk"] -add -master_clock ${usr_mux_clk1}  -divide_by 1 clockmux_inst/out_clk
+set_clock_groups -logically_exclusive -group [get_clocks "ideal_mux_clock1"]  -group [get_clocks "ideal_mux_clock2"]
+
+
+
 
 # This constraint sets the load capacitance in picofarads of the
 # output pins of your design.
