@@ -145,14 +145,14 @@ module top_wrapper_tb();
     initial begin 
         user_clock2 = 0;
         forever begin
-            #5 user_clock2 = ~user_clock2;
+            #10 user_clock2 = ~user_clock2;
         end 
     end
 
     initial begin 
         wb_clk_i = 0;
         forever begin
-            #12.5 wb_clk_i = ~wb_clk_i;
+            #50 wb_clk_i = ~wb_clk_i;
         end 
     end
 

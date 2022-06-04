@@ -24,7 +24,7 @@ set userclockmux_name ideal_mux_user_clock
 set clockmux_name   ideal_mux_clock
 
 
-create_clock -name ${wbclock_name}     -period ${clock_period} [get_ports "wb_clk_i"]
+create_clock -name ${wbclock_name}     -period 100 [get_ports "wb_clk_i"]
 create_clock -name ${ioclock_name}   -period ${clock_period} [get_ports "io_in[13]"]
 create_clock -name ${userclock2_name}   -period ${clock_period} [get_ports "user_clock2"]
 create_clock -name ${userclockmux_name} -period ${clock_period} [get_pins usrclockmux_inst/out_clk]
@@ -56,15 +56,13 @@ set_driving_cell -no_design_rule \
 # set_input_delay constraints for input ports
 # Make this non-zero to avoid hold buffers on input-registered designs
 
-set_input_delay -clock ${wbclock_name} [expr ${clock_period}/2.0] [remove_from_collection [all_inputs] [get_ports $wbclock_net]]
-set_input_delay -clock ${ioclock_name} [expr ${clock_period}/2.0] [remove_from_collection [all_inputs] [get_ports $ioclock_net]]
-set_input_delay -clock ${userclock2_name} [expr ${clock_period}/2.0] [remove_from_collection [all_inputs] [get_ports $userclock2_net]]
+set_input_delay -clock ${wbclock_name} [expr ${clock_period}/2.0] [remove_from_collection [get_ports "wb*_i"] [get_ports $wbclock_net]]
+set_input_delay -clock ${ioclock_name} [expr ${clock_period}/2.0] [remove_from_collection [get_ports "io_in*"] [get_ports $ioclock_net]]
 
 # set_output_delay constraints for output ports
 
-set_output_delay -clock ${wbclock_name} [expr ${clock_period} * 0.2] [all_outputs]
-set_output_delay -clock ${ioclock_name} [expr ${clock_period} * 0.2] [all_outputs]
-set_output_delay -clock ${userclock2_name} [expr ${clock_period} * 0.2] [all_outputs]
+set_output_delay -clock ${wbclock_name} [expr ${clock_period} * 0.2] [get_ports "wb*_o"]
+set_output_delay -clock ${ioclock_name} [expr ${clock_period} * 0.2] [get_ports "io_o*"]
 
 # Make all signals limit their fanout
 
