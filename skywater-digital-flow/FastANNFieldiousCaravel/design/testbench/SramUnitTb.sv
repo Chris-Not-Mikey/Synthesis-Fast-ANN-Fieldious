@@ -203,7 +203,7 @@ module top_wrapper_tb();
         // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[6].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
         // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[7].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
         
-        for (int q=0; q<2; q=q+1) begin
+        for (int q=0; q<1; q=q+1) begin
             expected_idx_data_file = $fopen("inputs/expectedIndex.txt", "r");
             // expected_idx_data_file = $fopen("data/IO_data/topToBottomLeafIndex.txt", "r");
             if (expected_idx_data_file == 0) begin
@@ -237,20 +237,25 @@ module top_wrapper_tb();
         
             $display("Starting new image");
 
-            wb_rst_i = 1;
+            wb_rst_i = 0;
             wbs_stb_i = 0;
             wbs_cyc_i = 0;
             fsm_start = 0;
             send_best_arr = 0;
             load_kdtree = 0;
-            io_rst_n = 0;
+            io_rst_n = 1;
             in_fifo_wenq = 0;
             in_fifo_wdata = '0;
             out_fifo_deq = '0;
             la_data_in = '0;
             
-            #20
+            #100
+            wb_rst_i = 1;
+            #100      
             wb_rst_i = 0;      
+            #100
+            io_rst_n = 0;
+            #100
             io_rst_n = 1;
             #40;
 
@@ -871,7 +876,7 @@ module top_wrapper_tb();
     initial begin
         $dumpfile("dump.vcd");
         $dumpvars;
-	    #1678000;
+	    #167800;
         $finish(2);
     end
 
