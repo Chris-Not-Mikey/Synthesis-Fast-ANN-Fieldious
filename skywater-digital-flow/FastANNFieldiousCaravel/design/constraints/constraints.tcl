@@ -66,16 +66,16 @@ set_driving_cell -no_design_rule \
 
 # set_input_delay constraints for input ports
 # Make this non-zero to avoid hold buffers on input-registered designs
+set_input_delay -clock ${userclock2_name} [expr ${clock_period} * 0.5] [all_inputs]
 
-set_input_delay -clock ${wbclock_name} [expr ${clock_period} * 0.5] [remove_from_collection [get_ports "wb*_i"] [get_ports $wbclock_net]]
-set_input_delay -clock ${ioclock_name} [expr ${clock_period} * 0.5] [remove_from_collection [get_ports "io_in*"] [get_ports $ioclock_net]]
-# set_input_delay -clock ${userclock2_name} [expr ${clock_period}/2.0] [remove_from_collection [all_inputs] [get_ports $userclock2_net]]
+set_input_delay -clock ${wbclock_name} [expr ${clock_period} * 0.5] [get_ports -regexp {.*wb.*i.*} ]
+set_input_delay -clock ${ioclock_name} [expr ${clock_period} * 0.5] [get_ports -regexp {.*io_in.*} ]
+set_input_delay -clock ${userclock2_name} [expr ${clock_period} * 0.5] [get_ports -regexp {.*clock.*} ]
 
 # set_output_delay constraints for output ports
-
+set_output_delay -clock ${userclock2_name} [expr ${clock_period} * 0.5] [all_outputs]
 set_output_delay -clock ${wbclock_name} [expr ${clock_period} * 0.5] [get_ports "wb*_o"]
 set_output_delay -clock ${ioclock_name} [expr ${clock_period} * 0.5] [get_ports "io_o*"]
-# set_output_delay -clock ${userclock2_name} [expr ${clock_period} * 0.2] [all_outputs]
 
 # Make all signals limit their fanout
 
