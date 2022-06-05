@@ -42,6 +42,8 @@ module user_proj_example #(
     wire [`MPRJ_IO_PADS-1:0] io_in;
     wire [`MPRJ_IO_PADS-1:0] io_out;
     wire [`MPRJ_IO_PADS-1:0] io_oeb;
+    wire [`MPRJ_IO_PADS-1:0] io_out_user;
+    wire [`MPRJ_IO_PADS-1:0] io_oeb_user;
 
     wire                                                    clkmux_usrclk;
     wire                                                    io_clk;
@@ -65,7 +67,7 @@ module user_proj_example #(
     wire [7:0]                                              wbs_leaf_mem_web0;
     wire [5:0]                                              wbs_leaf_mem_addr0;
     wire [63:0]                                             wbs_leaf_mem_wleaf0;
-    wire [63:0][7:0]                                        wbs_leaf_mem_rleaf0;
+    wire [64*8-1:0]                                         wbs_leaf_mem_rleaf0;
     wire                                                    wbs_best_arr_csb1;
     wire [7:0]                                              wbs_best_arr_addr1;
     wire [63:0]                                             wbs_best_arr_rdata1;
@@ -98,44 +100,53 @@ module user_proj_example #(
 
     // IRQ
     assign irq = 3'b000;	// Unused
-    assign la_data_out = 128'd0;  // Unused
 
-    // define all IO pin locations
-    assign io_clk = io_in[0];
-    assign io_rst_n = io_in[1];
-    assign io_out[1:0] = 2'd0;
-    assign io_oeb[1:0] = {2{1'b1}};
+    // GPIO mux for user, la
+    assign io_out = la_data_in[0] ?la_data_in[39:2] :io_out_user;
+    assign io_oeb = la_data_in[0] ?{38{la_data_in[1]}} :io_oeb_user;
 
-    assign in_fifo_wenq = io_in[2];
-    assign in_fifo_wdata = io_in[13:3];
-    assign io_out[13:2] = 12'd0;
-    assign io_oeb[13:2] = {12{1'b1}};
-    assign io_out[14] = in_fifo_wfull_n;
-    assign io_oeb[14] = 1'b0;
+    // define all user IO pin locations
+    assign in_fifo_wenq = io_in[0];
+    assign in_fifo_wdata = io_in[11:1];
+    assign io_out_user[11:0] = 12'd0;
+    assign io_oeb_user[11:0] = {12{1'b1}};
+    assign io_out_user[12] = in_fifo_wfull_n;
+    assign io_oeb_user[12] = 1'b0;
+
+    assign io_clk = io_in[13];
+    assign io_rst_n = io_in[14];
+    assign io_out_user[14:13] = 2'd0;
+    assign io_oeb_user[14:13] = {2{1'b1}};
 
     assign fsm_start = io_in[15];
     assign send_best_arr = io_in[16];
     assign load_kdtree = io_in[17];
-    assign io_out[17:15] = 3'd0;
-    assign io_oeb[17:15] = {3{1'b1}};
-    assign io_out[18] = load_done;
-    assign io_out[19] = fsm_done;
-    assign io_out[20] = send_done;
-    assign io_out[21] = wbs_done_synced;
-    assign io_out[22] = wbs_busy_synced;
-    assign io_out[23] = wbs_cfg_done_synced;
-    assign io_oeb[23:18] = {6{1'b0}};
-
+    assign io_out_user[17:15] = 3'd0;
+    assign io_oeb_user[17:15] = {3{1'b1}};
+    assign io_out_user[18] = load_done;
+    assign io_out_user[19] = fsm_done;
+    assign io_out_user[20] = send_done;
+    assign io_out_user[21] = wbs_done_synced;
+    assign io_out_user[22] = wbs_busy_synced;
+    assign io_out_user[23] = wbs_cfg_done_synced;
+    assign io_oeb_user[23:18] = {6{1'b0}};
 	// unused
-	assign io_out[24] = 1'b0;
-    assign io_oeb[24] = 1'b0;
-
+	assign io_out_user[24] = 1'b0;
+    assign io_oeb_user[24] = 1'b0;
     assign out_fifo_deq = io_in[25];
-    assign io_out[25] = 1'b0;
-    assign io_oeb[25] = 1'b1;
-    assign io_out[36:26] = out_fifo_rdata;
-    assign io_out[37] = out_fifo_rempty_n;
-    assign io_oeb[37:26] = {12{1'b0}};
+    assign io_out_user[25] = 1'b0;
+    assign io_oeb_user[25] = 1'b1;
+    assign io_out_user[36:26] = out_fifo_rdata;
+    assign io_out_user[37] = out_fifo_rempty_n;
+    assign io_oeb_user[37:26] = {12{1'b0}};
+
+
+    // LA mux to test GPIO
+    // la data_in[0]: connect gpio to la
+    // la_data_in[1]: set input or output direction
+    assign la_data_out[39:0] = 40'd0;
+    assign la_data_out[77:40] = io_in[37:0];
+    assign la_data_out[127:78] = 50'd0;
 
 
     ClockMux usrclockmux_inst (
