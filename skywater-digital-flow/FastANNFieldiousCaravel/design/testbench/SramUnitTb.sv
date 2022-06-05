@@ -238,6 +238,8 @@ module top_wrapper_tb();
             $display("Starting new image");
 
             wb_rst_i = 1;
+            wbs_stb_i = 0;
+            wbs_cyc_i = 0;
             fsm_start = 0;
             send_best_arr = 0;
             load_kdtree = 0;
@@ -245,6 +247,7 @@ module top_wrapper_tb();
             in_fifo_wenq = 0;
             in_fifo_wdata = '0;
             out_fifo_deq = '0;
+            la_data_in = '0;
             
             #20
             wb_rst_i = 0;      
@@ -868,7 +871,7 @@ module top_wrapper_tb();
     initial begin
         $dumpfile("dump.vcd");
         $dumpvars;
-	#166780000;
+	    #1678000;
         $finish(2);
     end
 
