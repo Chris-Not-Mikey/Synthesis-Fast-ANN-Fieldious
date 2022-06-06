@@ -1,0 +1,65 @@
+[*]
+[*] GTKWave Analyzer v3.3.61 (w)1999-2014 BSI
+[*] Mon Jun  6 08:13:05 2022
+[*]
+[dumpfile] "/home/users/jakeke/synth_clk/skywater-digital-flow/FastANNFieldiousCaravel/build/27-gl-sim/outputs/run.vcd"
+[dumpfile_mtime] "Mon Jun  6 07:29:08 2022"
+[dumpfile_size] 484061716
+[savefile] "/home/users/jakeke/synth_clk/skywater-digital-flow/gl_sim.gtkw"
+[timestart] 28907650
+[size] 2048 997
+[pos] -1 -1
+*-14.000000 28973000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top_wrapper_tb.
+[treeopen] top_wrapper_tb.dut.
+[treeopen] top_wrapper_tb.dut.acc_inst.
+[sst_width] 289
+[signals_width] 190
+[sst_expanded] 1
+[sst_vpaned_height] 278
+@28
+top_wrapper_tb.dut.acc_inst.clk
+top_wrapper_tb.dut.acc_inst.rst_n
+@22
+top_wrapper_tb.dut.acc_inst.main_fsm_inst.currState[4:0]
+@28
+top_wrapper_tb.dut.acc_inst.main_fsm_inst.load_kdtree
+top_wrapper_tb.dut.acc_inst.main_fsm_inst.load_done
+top_wrapper_tb.dut.acc_inst.main_fsm_inst.fsm_start
+top_wrapper_tb.dut.acc_inst.main_fsm_inst.fsm_done
+top_wrapper_tb.dut.acc_inst.main_fsm_inst.send_best_arr
+top_wrapper_tb.dut.acc_inst.main_fsm_inst.send_done
+@200
+-in fifo
+@28
+top_wrapper_tb.dut.acc_inst.input_fifo_inst.sENQ
+@22
+top_wrapper_tb.dut.acc_inst.input_fifo_inst.sD_IN[10:0]
+@28
+top_wrapper_tb.dut.acc_inst.input_fifo_inst.dDEQ
+@22
+top_wrapper_tb.dut.acc_inst.input_fifo_inst.dD_OUT[10:0]
+@200
+-out fifo
+@28
+top_wrapper_tb.dut.acc_inst.output_fifo_inst.sENQ
+@22
+top_wrapper_tb.dut.acc_inst.output_fifo_inst.sD_IN[10:0]
+@28
+top_wrapper_tb.dut.acc_inst.out_fifo_rempty_n
+top_wrapper_tb.dut.acc_inst.out_fifo_deq_r
+@22
+top_wrapper_tb.dut.acc_inst.out_fifo_rdata[10:0]
+@200
+-
+@22
+top_wrapper_tb.dut.acc_inst.sl0.l2_dist_in[24:0]
+@29
+top_wrapper_tb.dut.acc_inst.qp_mem_inst.csb0
+@22
+top_wrapper_tb.dut.acc_inst.l2_k0_inst.query_patch[54:0]
+top_wrapper_tb.dut.acc_inst.l2_k0_inst.p7_diff2[104:0]
+top_wrapper_tb.dut.acc_inst.l2_k0_inst.p7_data_in_r[54:0]
+top_wrapper_tb.dut.acc_inst.l2_k0_inst.p7_data[54:0]
+[pattern_trace] 1
+[pattern_trace] 0
