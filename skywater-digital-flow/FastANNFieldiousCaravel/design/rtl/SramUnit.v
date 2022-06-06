@@ -2143,7 +2143,7 @@ module LeavesMem (
 	input wire [LEAF_SIZE - 1:0] web0;
 	input wire [LEAF_ADDRW - 1:0] addr0;
 	input wire [((PATCH_SIZE * DATA_WIDTH) + IDX_WIDTH) - 1:0] wleaf0;
-	output wire [(64 * LEAF_SIZE) - 1:0] rleaf0;
+	output wire [(LEAF_SIZE * 64) - 1:0] rleaf0;
 	output wire [((LEAF_SIZE * PATCH_SIZE) * DATA_WIDTH) - 1:0] rpatch_data0;
 	output wire [(LEAF_SIZE * IDX_WIDTH) - 1:0] rpatch_idx0;
 	input wire csb1;
@@ -2179,7 +2179,7 @@ module LeavesMem (
 			assign rpatch_idx0[i * IDX_WIDTH+:IDX_WIDTH] = rdata0[i][63:PATCH_SIZE * DATA_WIDTH];
 			assign rpatch_data1[DATA_WIDTH * (i * PATCH_SIZE)+:DATA_WIDTH * PATCH_SIZE] = rdata1[i][(PATCH_SIZE * DATA_WIDTH) - 1:0];
 			assign rpatch_idx1[i * IDX_WIDTH+:IDX_WIDTH] = rdata1[i][63:PATCH_SIZE * DATA_WIDTH];
-			assign rleaf0[i * LEAF_SIZE+:LEAF_SIZE] = rdata0[i];
+			assign rleaf0[i * 64+:64] = rdata0[i];
 		end
 	endgenerate
 endmodule
