@@ -8,7 +8,7 @@ module top_wrapper_tb();
     parameter DATA_WIDTH = 11;
     parameter LEAF_SIZE = 8;
     parameter PATCH_SIZE = 5;
-    parameter ROW_SIZE = 26;
+    parameter ROW_SIZE = 28;
     parameter COL_SIZE = 19;
     parameter NUM_QUERYS = ROW_SIZE * COL_SIZE;
     parameter NUM_LEAVES = 64;
