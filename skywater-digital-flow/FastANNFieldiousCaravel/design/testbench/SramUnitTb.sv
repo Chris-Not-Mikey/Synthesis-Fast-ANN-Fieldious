@@ -145,7 +145,7 @@ module top_wrapper_tb();
     initial begin 
         user_clock2 = 0;
         forever begin
-            #2.5 user_clock2 = ~user_clock2;
+            #3.5 user_clock2 = ~user_clock2;
         end 
     end
 
@@ -159,7 +159,7 @@ module top_wrapper_tb();
     initial begin 
         io_clk = 0; //Our clock is IO pin1
         forever begin
-            #2.5 io_clk = ~io_clk;
+            #3.5 io_clk = ~io_clk;
         end 
     end
 
@@ -893,7 +893,7 @@ module top_wrapper_tb();
     initial begin
         $dumpfile("dump.vcd");
         $dumpvars;
-	    #167800;
+	    #1678000;
         $finish(2);
     end
 

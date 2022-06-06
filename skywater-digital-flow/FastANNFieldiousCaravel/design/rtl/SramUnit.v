@@ -2503,6 +2503,7 @@ module MainFSM (
 				k0_query_valid = 1'b1;
 				k0_query_last_in = 1'b1;
 				k0_query_patch = cur_query_patch0;
+				k1_exactfstrow = 1'b1;
 				k1_query_valid = 1'b1;
 				k1_query_last_in = 1'b1;
 				k1_query_patch = cur_query_patch1;
@@ -4628,7 +4629,7 @@ module top (
 		.query_valid(k1_query_valid),
 		.query_patch(k1_query_patch),
 		.dist_valid(k1_dist_valid),
-		.leaf_idx_in(k1_leaf_idx_in),
+		.leaf_idx_in((k1_exactfstrow ? k0_leaf_idx_in : k1_leaf_idx_in)),
 		.leaf_idx_out(k1_leaf_idx_out),
 		.p0_data(k1_p0_data),
 		.p1_data(k1_p1_data),
@@ -4682,9 +4683,7 @@ module top (
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n)
 			k1_leaf_idx_in <= 1'sb0;
-		else if ((k1_exactfstrow & ~leaf_mem_csb0) & leaf_mem_web0)
-			k1_leaf_idx_in <= leaf_mem_addr0;
-		else if (~k1_exactfstrow & ~leaf_mem_csb1)
+		else if (~leaf_mem_csb1)
 			k1_leaf_idx_in <= leaf_mem_addr1;
 	BitonicSorter sorter1_inst(
 		.clk(clk),

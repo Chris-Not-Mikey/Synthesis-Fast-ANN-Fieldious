@@ -125,8 +125,10 @@ if { $macros != "" } {
   setPathGroupOptions Macro2All -effortLevel high
 }
 
-# if { $regs != "" } {
-#   setPathGroupOptions Reg2Reg -effortLevel high
-# }
+if { $regs != "" } {
+  setPathGroupOptions Reg2Reg -effortLevel high
+}
 
-
+if { $allregs != "" } {
+  setPathGroupOptions Reg2Out -effortLevel high
+}
