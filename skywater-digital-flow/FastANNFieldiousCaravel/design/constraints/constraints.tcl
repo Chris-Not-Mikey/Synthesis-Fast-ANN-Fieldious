@@ -27,8 +27,8 @@ set clockmux_name   ideal_mux_clock
 create_clock -name ${wbclock_name}     -period 100 [get_ports "wb_clk_i"]
 create_clock -name ${ioclock_name}   -period ${clock_period} [get_ports "io_in[13]"]
 create_clock -name ${userclock2_name}   -period ${clock_period} [get_ports "user_clock2"]
-create_clock -name ${userclockmux_name} -period ${clock_period} [get_pins usrclockmux_inst/out_clk]
-create_clock -name ${clockmux_name} -period ${clock_period} [get_pins clockmux_inst/out_clk]
+# create_clock -name ${userclockmux_name} -period ${clock_period} [get_pins usrclockmux_inst/out_clk]
+# create_clock -name ${clockmux_name} -period ${clock_period} [get_pins clockmux_inst/out_clk]
 
 set_clock_groups -asynchronous \
                  -group [get_clocks ${wbclock_name}] \

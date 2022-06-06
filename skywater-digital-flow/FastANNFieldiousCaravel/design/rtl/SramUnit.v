@@ -771,14 +771,14 @@ module internal_node (
 	reg signed [10:0] sliced_patch_two;
 	wire comparison;
 	wire comparison_two;
-	always @(clk)
+	always @(posedge clk)
 		if (rst_n == 0)
 			idx <= 3'b111;
 		else if (wen)
 			idx <= wdata[2:0];
 		else
 			idx <= idx;
-	always @(clk)
+	always @(posedge clk)
 		if (rst_n == 0)
 			median <= 0;
 		else if (wen)
