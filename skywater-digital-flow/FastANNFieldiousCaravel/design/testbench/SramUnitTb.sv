@@ -203,7 +203,7 @@ module top_wrapper_tb();
         // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[6].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
         // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[7].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
         
-        for (int q=0; q<2; q=q+1) begin
+	for (int q=0; q<4; q=q+1) begin
             expected_idx_data_file = $fopen("inputs/expectedIndex.txt", "r");
             // expected_idx_data_file = $fopen("data/IO_data/topToBottomLeafIndex.txt", "r");
             if (expected_idx_data_file == 0) begin
@@ -382,8 +382,8 @@ module top_wrapper_tb();
                 $fwrite(received_idx_data_file, "%d\n", received_idx[i]);
                 if (expected_idx[i] != received_idx[i])
                     $display("mismatch %d: expected: %d, received %d", i, expected_idx[i], received_idx[i]);
-                // else
-                //     $display("match %d: expected: %d, received %d", i, expected_idx[i], received_idx[i]);
+                else
+                    $display("match %d: expected: %d, received %d", i, expected_idx[i], received_idx[i]);
             end
                 
             
