@@ -36,18 +36,8 @@ create_clock -name ${wbclock_name}  -period ${clock_period} [get_ports "wb_clk_i
 create_clock -name ${ioclock_name}  -period ${clock_period} [get_ports "io_in[0]"] 
 create_clock -name ${userclock2_name}   -period ${clock_period} [get_ports "user_clock2"] 
 
-#FIRST MUX
-create_generated_clock -name ${usr_mux_clk1} -source [get_ports "user_clock2"] -add -master_clock ${userclock2_name} -divide_by 1 usrclockmux_inst/out_clk
-create_generated_clock -name ${usr_mux_clk2} -source [get_ports "io_in[0]"] -add -master_clock ${ioclock_name}  -divide_by 1 usrclockmux_inst/out_clk
-set_clock_groups -logically_exclusive -group [get_clocks "ideal_mux_user_clock1"]  -group [get_clocks "ideal_mux_user_clock2"]
-
-#SECOND MUX
-create_generated_clock -name ${mux_clk1} -source [get_ports "wb_clk_i"] -add -master_clock ${wbclock_name} -divide_by 1 clockmux_inst/out_clk
-# Pick more aggressive gen clock
-create_generated_clock -name ${mux_clk2} -source [get_pins "usrclockmux_inst/out_clk"] -add -master_clock ${usr_mux_clk1}  -divide_by 1 clockmux_inst/out_clk
-set_clock_groups -logically_exclusive -group [get_clocks "ideal_mux_clock1"]  -group [get_clocks "ideal_mux_clock2"]
-
-
+#MUXES
+set_clock_groups -logically_exclusive -group [get_clocks "ideal_clock_io"]  -group [get_clocks "ideal_user_clock2"] -group [get_clocks "ideal_clock"]
 
 
 # This constraint sets the load capacitance in picofarads of the
@@ -66,11 +56,11 @@ set_driving_cell -no_design_rule \
 
 # set_input_delay constraints for input ports
 # Make this non-zero to avoid hold buffers on input-registered designs
-set_input_delay -clock ${userclock2_name} [expr ${clock_period} * 0.5] [all_inputs]
+set_input_delay -clock ${wbclock_name} [expr ${clock_period} * 0.5] [get_ports -regexp {(?=.*wb.*i.*)(?!.*clk)^.*$} ]
+set_input_delay -clock ${ioclock_name} [expr ${clock_period} * 0.5] [get_ports -regexp {(?=.*io.*i.*)(?!.*\\\[0)^.*$} ]
+set_input_delay -clock ${wbclock_name} [expr ${clock_period} * 0.5] [get_ports -regexp {.*la.*in.*|.*la.*oen.*} ]
+#set_clock_latency -source [expr ${clock_period} * 0.5] [get_clocks *]
 
-set_input_delay -clock ${wbclock_name} [expr ${clock_period} * 0.5] [get_ports -regexp {.*wb.*i.*} ]
-set_input_delay -clock ${ioclock_name} [expr ${clock_period} * 0.5] [get_ports -regexp {.*io_in.*} ]
-set_input_delay -clock ${userclock2_name} [expr ${clock_period} * 0.5] [get_ports -regexp {.*clock.*} ]
 
 # set_output_delay constraints for output ports
 set_output_delay -clock ${userclock2_name} [expr ${clock_period} * 0.5] [all_outputs]
