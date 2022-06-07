@@ -8,7 +8,7 @@ module top_wrapper_tb();
     parameter DATA_WIDTH = 11;
     parameter LEAF_SIZE = 8;
     parameter PATCH_SIZE = 5;
-    parameter ROW_SIZE = 26;
+    parameter ROW_SIZE = 24;
     parameter COL_SIZE = 19;
     parameter NUM_QUERYS = ROW_SIZE * COL_SIZE;
     parameter NUM_LEAVES = 64;
@@ -325,11 +325,11 @@ module top_wrapper_tb();
             // #1000; // test for continuous and uncontinuous rempty_n
 
             for(int px=0; px<2; px=px+1) begin
-                for(x=0; x<4; x=x+1) begin
-                    // for(x=0; x<(ROW_SIZE/2/BLOCKING); x=x+1) begin  // for row_size = 26
+                //for(x=0; x<4; x=x+1) begin
+                  for(x=0; x<(ROW_SIZE/2/BLOCKING); x=x+1) begin  // for row_size = 26
                     for(y=0; y<COL_SIZE; y=y+1) begin
                         for(xi=0; xi<BLOCKING; xi=xi+1) begin
-                            if ((x != 3) || (xi < 1)) begin  // for row_size = 26
+                           // if ((x != 3) || (xi < 1)) begin  // for row_size = 26
                                 while(1) begin 
                                     @(negedge io_clk)
                                     if (out_fifo_rempty_n) begin
@@ -351,12 +351,12 @@ module top_wrapper_tb();
 
             // need this else the fsm state and output fifo is messed up
             for(int px=0; px<2; px=px+1) begin
-                for(x=0; x<4; x=x+1) begin
-                    // for(x=0; x<(ROW_SIZE/2/BLOCKING); x=x+1) begin  // for row_size = 24
+                //for(x=0; x<4; x=x+1) begin
+                 for(x=0; x<(ROW_SIZE/2/BLOCKING); x=x+1) begin  // for row_size = 24
                     for(y=0; y<COL_SIZE; y=y+1) begin
                         for(xi=0; xi<BLOCKING; xi=xi+1) begin
                             for(int agg=0; agg<=1; agg=agg+1) begin  // most significant first
-                                if ((x != 3) || (xi < 1)) begin  // for row_size = 26
+                                //if ((x != 3) || (xi < 1)) begin  // for row_size = 26
                                     while(1) begin 
                                         @(negedge io_clk)
                                         if (out_fifo_rempty_n) begin
