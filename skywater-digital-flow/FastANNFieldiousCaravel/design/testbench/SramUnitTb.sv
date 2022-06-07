@@ -185,34 +185,14 @@ module top_wrapper_tb();
 
     initial begin
         $timeformat(-9, 2, "ns", 20);
-
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[0].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[1].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[2].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[3].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[4].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[5].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[6].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[7].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[0].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[1].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[2].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[3].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[4].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[5].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[6].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[7].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        
-	for (int q=0; q<4; q=q+1) begin
-            expected_idx_data_file = $fopen("inputs/expectedIndex.txt", "r");
+	    
+	    expected_idx_data_file = $fopen("inputs/expectedIndex.txt", "r");
             // expected_idx_data_file = $fopen("data/IO_data/topToBottomLeafIndex.txt", "r");
             if (expected_idx_data_file == 0) begin
                 $display("expected_idx_data_file handle was NULL");
                 $finish;
             end
-            for(int i=0; i<NUM_QUERYS; i=i+1) begin
-                scan_file = $fscanf(expected_idx_data_file, "%d\n", expected_idx[i]);
-            end
+         
             
             int_nodes_data_file = $fopen("inputs/internalNodes.txt", "r");
             if (int_nodes_data_file == 0) begin
@@ -231,7 +211,14 @@ module top_wrapper_tb();
                 $display("query_data_file handle was NULL");
                 $finish;
             end
+
+	for (int q=0; q<4; q=q+1) begin
             
+            for(int i=0; i<NUM_QUERYS; i=i+1) begin
+                scan_file = $fscanf(expected_idx_data_file, "%d\n", expected_idx[i]);
+            end
+		
+		
             received_idx_data_file = $fopen("received_idx.txt", "a");
 	    received_dist_data_file = $fopen("received_dist.txt", "a");
         
