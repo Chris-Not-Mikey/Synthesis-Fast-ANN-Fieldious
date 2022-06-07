@@ -192,9 +192,7 @@ module top_wrapper_tb();
                 $display("expected_idx_data_file handle was NULL");
                 $finish;
             end
-            for(int i=0; i<NUM_QUERYS; i=i+1) begin
-                scan_file = $fscanf(expected_idx_data_file, "%d\n", expected_idx[i]);
-            end
+
             
             int_nodes_data_file = $fopen("inputs/internalNodes.txt", "r");
             if (int_nodes_data_file == 0) begin
@@ -218,6 +216,11 @@ module top_wrapper_tb();
 	    
         for (int q=0; q<2; q=q+1) begin
             
+		
+	    //Prepare new image
+            for(int i=0; i<NUM_QUERYS; i=i+1) begin
+                scan_file = $fscanf(expected_idx_data_file, "%d\n", expected_idx[i]);
+            end
             
             received_idx_data_file = $fopen("received_idx.txt", "a");
 	    received_dist_data_file = $fopen("received_dist.txt", "a");
