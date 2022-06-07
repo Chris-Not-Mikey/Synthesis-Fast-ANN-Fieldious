@@ -2114,7 +2114,7 @@ module MainFSM (
 	parameter DATA_WIDTH = 11;
 	parameter LEAF_SIZE = 8;
 	parameter PATCH_SIZE = 5;
-	parameter ROW_SIZE = 26;
+	parameter ROW_SIZE = 24;
 	parameter COL_SIZE = 19;
 	parameter NUM_QUERYS = ROW_SIZE * COL_SIZE;
 	parameter K = 4;
@@ -3718,7 +3718,7 @@ module top (
 	parameter IDX_WIDTH = 9;
 	parameter LEAF_SIZE = 8;
 	parameter PATCH_SIZE = 5;
-	parameter ROW_SIZE = 26;
+	parameter ROW_SIZE = 24;
 	parameter COL_SIZE = 19;
 	parameter NUM_QUERYS = ROW_SIZE * COL_SIZE;
 	parameter K = 4;
