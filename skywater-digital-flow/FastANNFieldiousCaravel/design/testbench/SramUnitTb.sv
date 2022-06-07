@@ -340,7 +340,7 @@ module top_wrapper_tb();
                                         break;
                                     end else out_fifo_deq = 1'b0;
                                 end
-                            end
+                            //end
                         end
                     end
                 end
@@ -366,7 +366,7 @@ module top_wrapper_tb();
                                             break;
                                         end else out_fifo_deq = 1'b0;
                                     end
-                                end
+                                //end
                             end
                         end
                     end
