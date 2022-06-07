@@ -9,7 +9,7 @@ module top_wrapper_tb();
     parameter LEAF_SIZE = 8;
     parameter PATCH_SIZE = 5;
     parameter ROW_SIZE = 32;
-    parameter COL_SIZE = 18;
+    parameter COL_SIZE = 16;
     parameter NUM_QUERYS = ROW_SIZE * COL_SIZE;
     parameter NUM_LEAVES = 64;
     parameter NUM_NODES = NUM_LEAVES - 1;
