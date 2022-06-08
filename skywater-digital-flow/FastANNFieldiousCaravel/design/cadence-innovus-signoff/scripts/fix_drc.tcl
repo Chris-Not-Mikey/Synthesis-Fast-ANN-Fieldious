@@ -8,5 +8,6 @@ setNanoRouteMode -quiet -drouteEndIteration 500
 editDelete -regular_wire_with_drc
 ecoRoute
 # need a second fix
+verifyProcessAntenna
 editDelete -regular_wire_with_drc
 ecoRoute
