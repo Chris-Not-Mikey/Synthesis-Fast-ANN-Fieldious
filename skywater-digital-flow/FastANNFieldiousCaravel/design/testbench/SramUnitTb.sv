@@ -8,8 +8,8 @@ module top_wrapper_tb();
     parameter DATA_WIDTH = 11;
     parameter LEAF_SIZE = 8;
     parameter PATCH_SIZE = 5;
-    parameter ROW_SIZE = 26;
-    parameter COL_SIZE = 19;
+    parameter ROW_SIZE = 32;
+    parameter COL_SIZE = 16;
     parameter NUM_QUERYS = ROW_SIZE * COL_SIZE;
     parameter NUM_LEAVES = 64;
     parameter NUM_NODES = NUM_LEAVES - 1;
@@ -185,34 +185,14 @@ module top_wrapper_tb();
 
     initial begin
         $timeformat(-9, 2, "ns", 20);
-
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[0].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[1].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[2].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[3].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[4].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[5].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[6].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[7].ram_patch_inst.loop_depth_gen[0].loop_width_gen[0].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[0].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[1].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[2].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy0.txt", dut.leaf_mem_inst.loop_ram_patch_gen[3].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[4].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[5].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[6].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        // $readmemh("leaves_mem_dummy1.txt", dut.leaf_mem_inst.loop_ram_patch_gen[7].ram_patch_inst.loop_depth_gen[0].loop_width_gen[1].genblk1.sram_macro.mem);
-        
-        for (int q=0; q<2; q=q+1) begin
-            expected_idx_data_file = $fopen("inputs/expectedIndex.txt", "r");
+	    
+	    expected_idx_data_file = $fopen("inputs/expectedIndex.txt", "r");
             // expected_idx_data_file = $fopen("data/IO_data/topToBottomLeafIndex.txt", "r");
             if (expected_idx_data_file == 0) begin
                 $display("expected_idx_data_file handle was NULL");
                 $finish;
             end
-            for(int i=0; i<NUM_QUERYS; i=i+1) begin
-                scan_file = $fscanf(expected_idx_data_file, "%d\n", expected_idx[i]);
-            end
+         
             
             int_nodes_data_file = $fopen("inputs/internalNodes.txt", "r");
             if (int_nodes_data_file == 0) begin
@@ -231,7 +211,14 @@ module top_wrapper_tb();
                 $display("query_data_file handle was NULL");
                 $finish;
             end
+
+	for (int q=0; q<4; q=q+1) begin
             
+            for(int i=0; i<NUM_QUERYS; i=i+1) begin
+                scan_file = $fscanf(expected_idx_data_file, "%d\n", expected_idx[i]);
+            end
+		
+		
             received_idx_data_file = $fopen("received_idx.txt", "a");
 	    received_dist_data_file = $fopen("received_dist.txt", "a");
         
@@ -325,11 +312,11 @@ module top_wrapper_tb();
             // #1000; // test for continuous and uncontinuous rempty_n
 
             for(int px=0; px<2; px=px+1) begin
-                for(x=0; x<4; x=x+1) begin
-                    // for(x=0; x<(ROW_SIZE/2/BLOCKING); x=x+1) begin  // for row_size = 26
+                //for(x=0; x<4; x=x+1) begin
+                  for(x=0; x<(ROW_SIZE/2/BLOCKING); x=x+1) begin  // for row_size = 26
                     for(y=0; y<COL_SIZE; y=y+1) begin
                         for(xi=0; xi<BLOCKING; xi=xi+1) begin
-                            if ((x != 3) || (xi < 1)) begin  // for row_size = 26
+                            //if ((x != 3) || (xi < 1)) begin  // for row_size = 26
                                 while(1) begin 
                                     @(negedge io_clk)
                                     if (out_fifo_rempty_n) begin
@@ -340,7 +327,7 @@ module top_wrapper_tb();
                                         break;
                                     end else out_fifo_deq = 1'b0;
                                 end
-                            end
+                            //end
                         end
                     end
                 end
@@ -351,12 +338,12 @@ module top_wrapper_tb();
 
             // need this else the fsm state and output fifo is messed up
             for(int px=0; px<2; px=px+1) begin
-                for(x=0; x<4; x=x+1) begin
-                    // for(x=0; x<(ROW_SIZE/2/BLOCKING); x=x+1) begin  // for row_size = 24
+                //for(x=0; x<4; x=x+1) begin
+                 for(x=0; x<(ROW_SIZE/2/BLOCKING); x=x+1) begin  // for row_size = 24
                     for(y=0; y<COL_SIZE; y=y+1) begin
                         for(xi=0; xi<BLOCKING; xi=xi+1) begin
                             for(int agg=0; agg<=1; agg=agg+1) begin  // most significant first
-                                if ((x != 3) || (xi < 1)) begin  // for row_size = 26
+                               // if ((x != 3) || (xi < 1)) begin  // for row_size = 26
                                     while(1) begin 
                                         @(negedge io_clk)
                                         if (out_fifo_rempty_n) begin
@@ -366,7 +353,7 @@ module top_wrapper_tb();
                                             break;
                                         end else out_fifo_deq = 1'b0;
                                     end
-                                end
+                                //end
                             end
                         end
                     end
@@ -382,8 +369,8 @@ module top_wrapper_tb();
                 $fwrite(received_idx_data_file, "%d\n", received_idx[i]);
                 if (expected_idx[i] != received_idx[i])
                     $display("mismatch %d: expected: %d, received %d", i, expected_idx[i], received_idx[i]);
-                // else
-                //     $display("match %d: expected: %d, received %d", i, expected_idx[i], received_idx[i]);
+                else
+                    $display("match %d: expected: %d, received %d", i, expected_idx[i], received_idx[i]);
             end
                 
             
