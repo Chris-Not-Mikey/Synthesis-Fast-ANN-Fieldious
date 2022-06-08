@@ -14,7 +14,7 @@
 set wbclock_net  wb_clk_i
 set wbclock_name ideal_clock
 
-set ioclock_net io_in[13]
+set ioclock_net io_in[0]
 set ioclock_name   ideal_clock_io
 
 set userclock2_net user_clock2
@@ -24,20 +24,19 @@ set userclockmux_name ideal_mux_user_clock
 set clockmux_name   ideal_mux_clock
 
 
-create_clock -name ${wbclock_name}     -period 100 [get_ports "wb_clk_i"]
-create_clock -name ${ioclock_name}   -period ${clock_period} [get_ports "io_in[13]"]
-create_clock -name ${userclock2_name}   -period ${clock_period} [get_ports "user_clock2"]
-# create_clock -name ${userclockmux_name} -period ${clock_period} [get_pins usrclockmux_inst/out_clk]
-# create_clock -name ${clockmux_name} -period ${clock_period} [get_pins clockmux_inst/out_clk]
+create_clock -name ${wbclock_name}  -period 100 [get_ports "wb_clk_i"] 
+create_clock -name ${ioclock_name}  -period ${clock_period} [get_ports "io_in[0]"] 
+create_clock -name ${userclock2_name}   -period ${clock_period} [get_ports "user_clock2"] 
 
-set_clock_groups -asynchronous \
-                 -group [get_clocks ${wbclock_name}] \
-                 -group [get_clocks ${userclock2_name}] \
-                 -group [get_clocks ${ioclock_name}]
+#MUXES
+set_clock_groups -logically_exclusive -group [get_clocks "ideal_clock_io"]  -group [get_clocks "ideal_user_clock2"] -group [get_clocks "ideal_clock"]
 
-# create_clock -name ${wbclock_name} \
-#              -period ${clock_period} \
-#              [get_ports ${clock_net}]
+# try
+# set_clock_groups -asynchronous \
+#                  -group [get_clocks ${wbclock_name}] \
+#                  -group [get_clocks ${userclock2_name}] \
+#                  -group [get_clocks ${ioclock_name}]
+
 
 # This constraint sets the load capacitance in picofarads of the
 # output pins of your design.
@@ -55,14 +54,17 @@ set_driving_cell -no_design_rule \
 
 # set_input_delay constraints for input ports
 # Make this non-zero to avoid hold buffers on input-registered designs
+set_input_delay -clock ${wbclock_name} [100 * 0.5] [get_ports -regexp {(?=.*wb.*i.*)(?!.*clk)^.*$} ]
+set_input_delay -clock ${ioclock_name} [expr ${clock_period} * 0.5] [get_ports -regexp {(?=.*io.*i.*)(?!.*\\\[0)^.*$} ]
+set_input_delay -clock ${wbclock_name} [100 * 0.5] [get_ports -regexp {.*la.*in.*|.*la.*oen.*} ]
+#set_clock_latency -source [expr ${clock_period} * 0.5] [get_clocks *]
 
-set_input_delay -clock ${wbclock_name} [expr ${clock_period}/2.0] [remove_from_collection [get_ports "wb*_i"] [get_ports $wbclock_net]]
-set_input_delay -clock ${ioclock_name} [expr ${clock_period}/2.0] [remove_from_collection [get_ports "io_in*"] [get_ports $ioclock_net]]
 
 # set_output_delay constraints for output ports
+set_output_delay -clock ${wbclock_name} [100 * 0.5] [all_outputs]
+set_output_delay -clock ${wbclock_name} [100 * 0.5] [get_ports "wb*_o"]
+set_output_delay -clock ${ioclock_name} [expr ${clock_period} * 0.5] [get_ports "io_o*"]
 
-set_output_delay -clock ${wbclock_name} [expr ${clock_period} * 0.2] [get_ports "wb*_o"]
-set_output_delay -clock ${ioclock_name} [expr ${clock_period} * 0.2] [get_ports "io_o*"]
 
 # Make all signals limit their fanout
 

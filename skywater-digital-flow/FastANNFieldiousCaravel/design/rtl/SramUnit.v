@@ -42,6 +42,8 @@ module user_proj_example #(
     wire [`MPRJ_IO_PADS-1:0] io_in;
     wire [`MPRJ_IO_PADS-1:0] io_out;
     wire [`MPRJ_IO_PADS-1:0] io_oeb;
+    wire [`MPRJ_IO_PADS-1:0] io_out_user;
+    wire [`MPRJ_IO_PADS-1:0] io_oeb_user;
 
     wire                                                    clkmux_usrclk;
     wire                                                    io_clk;
@@ -65,7 +67,7 @@ module user_proj_example #(
     wire [7:0]                                              wbs_leaf_mem_web0;
     wire [5:0]                                              wbs_leaf_mem_addr0;
     wire [63:0]                                             wbs_leaf_mem_wleaf0;
-    wire [63:0][7:0]                                        wbs_leaf_mem_rleaf0;
+    wire [64*8-1:0]                                         wbs_leaf_mem_rleaf0;
     wire                                                    wbs_best_arr_csb1;
     wire [7:0]                                              wbs_best_arr_addr1;
     wire [63:0]                                             wbs_best_arr_rdata1;
@@ -82,6 +84,9 @@ module user_proj_example #(
     wire                                                    wbs_busy_synced;
     wire                                                    wbs_done_synced;
     wire                                                    wbs_cfg_done_synced;
+    reg                                                     wbs_busy_synced_r;
+    reg                                                     wbs_done_synced_r;
+    reg                                                     wbs_cfg_done_synced_r;
     wire                                                    fsm_start;
     wire                                                    fsm_done;
     wire                                                    send_best_arr;
@@ -98,44 +103,53 @@ module user_proj_example #(
 
     // IRQ
     assign irq = 3'b000;	// Unused
-    assign la_data_out = 128'd0;  // Unused
 
-    // define all IO pin locations
-    assign in_fifo_wenq = io_in[0];
-    assign in_fifo_wdata = io_in[11:1];
-    assign io_out[11:0] = 12'd0;
-    assign io_oeb[11:0] = {12{1'b1}};
-    assign io_out[12] = in_fifo_wfull_n;
-    assign io_oeb[12] = 1'b0;
+    // GPIO mux for user, la
+    assign io_out = la_data_in[0] ?la_data_in[39:2] :io_out_user;
+    assign io_oeb = la_data_in[0] ?{38{la_data_in[1]}} :io_oeb_user;
 
-    assign io_clk = io_in[13];
-    assign io_rst_n = io_in[14];
-    assign io_out[14:13] = 2'd0;
-    assign io_oeb[14:13] = {2{1'b1}};
+    // define all user IO pin locations
+    assign io_clk = io_in[0];
+    assign io_rst_n = io_in[1];
+    assign io_out_user[1:0] = 2'd0;
+    assign io_oeb_user[1:0] = {2{1'b1}};
+
+    assign in_fifo_wenq = io_in[2];
+    assign in_fifo_wdata = io_in[13:3];
+    assign io_out_user[13:2] = 12'd0;
+    assign io_oeb_user[13:2] = {12{1'b1}};
+    assign io_out_user[14] = in_fifo_wfull_n;
+    assign io_oeb_user[14] = 1'b0;
 
     assign fsm_start = io_in[15];
     assign send_best_arr = io_in[16];
     assign load_kdtree = io_in[17];
-    assign io_out[17:15] = 3'd0;
-    assign io_oeb[17:15] = {3{1'b1}};
-    assign io_out[18] = load_done;
-    assign io_out[19] = fsm_done;
-    assign io_out[20] = send_done;
-    assign io_out[21] = wbs_done_synced;
-    assign io_out[22] = wbs_busy_synced;
-    assign io_out[23] = wbs_cfg_done_synced;
-    assign io_oeb[23:18] = {6{1'b0}};
-
+    assign io_out_user[17:15] = 3'd0;
+    assign io_oeb_user[17:15] = {3{1'b1}};
+    assign io_out_user[18] = load_done;
+    assign io_out_user[19] = fsm_done;
+    assign io_out_user[20] = send_done;
+    assign io_out_user[21] = wbs_done_synced_r;
+    assign io_out_user[22] = wbs_busy_synced_r;
+    assign io_out_user[23] = wbs_cfg_done_synced_r;
+    assign io_oeb_user[23:18] = {6{1'b0}};
 	// unused
-	assign io_out[24] = 1'b0;
-    assign io_oeb[24] = 1'b0;
-
+	assign io_out_user[24] = 1'b0;
+    assign io_oeb_user[24] = 1'b0;
     assign out_fifo_deq = io_in[25];
-    assign io_out[25] = 1'b0;
-    assign io_oeb[25] = 1'b1;
-    assign io_out[36:26] = out_fifo_rdata;
-    assign io_out[37] = out_fifo_rempty_n;
-    assign io_oeb[37:26] = {12{1'b0}};
+    assign io_out_user[25] = 1'b0;
+    assign io_oeb_user[25] = 1'b1;
+    assign io_out_user[36:26] = out_fifo_rdata;
+    assign io_out_user[37] = out_fifo_rempty_n;
+    assign io_oeb_user[37:26] = {12{1'b0}};
+
+
+    // LA mux to test GPIO
+    // la data_in[0]: connect gpio to la
+    // la_data_in[1]: set input or output direction
+    assign la_data_out[39:0] = 40'd0;
+    assign la_data_out[77:40] = io_in[37:0];
+    assign la_data_out[127:78] = 50'd0;
 
 
     ClockMux usrclockmux_inst (
@@ -240,12 +254,19 @@ module user_proj_example #(
         .clk(clkmux_clk),
         .rst_n(usr_rst_n_sync),
 
-        .load_kdtree(load_kdtree),
-        .load_done(load_done),
-        .fsm_start(fsm_start | wbs_fsm_start_synced),
-        .fsm_done(fsm_done),
-        .send_best_arr(send_best_arr),
-        .send_done(send_done),
+        .io_load_kdtree(load_kdtree),
+        .io_load_done(load_done),
+        .io_fsm_start(fsm_start),
+        .io_fsm_done(fsm_done),
+        .io_send_best_arr(send_best_arr),
+        .io_send_done(send_done),
+
+        .wb_clk_i(wb_clk_i),
+        .wb_rst_n_i(wb_rst_n_sync),
+        .wbs_fsm_start(wbs_fsm_start_synced),
+        .wbs_load_done(load_done_synced),
+        .wbs_fsm_done(fsm_done_synced),
+        .wbs_send_done(send_done_synced),
 
         .io_clk(io_clk),
         .io_rst_n(io_rst_n),
@@ -277,38 +298,6 @@ module user_proj_example #(
         .wbs_best_arr_rdata1                    (wbs_best_arr_rdata1)
     );
 
-    SyncPulse fsm_start_sync (
-        .sCLK(wb_clk_i),
-        .sRST(),  // not needed
-        .sEN(wbs_fsm_start),
-        .dCLK(clkmux_clk),
-        .dPulse(wbs_fsm_start_synced)
-    );
-
-    SyncPulse fsm_done_sync (
-        .sCLK(clkmux_clk),
-        .sRST(),  // not needed
-        .sEN(fsm_done),
-        .dCLK(wb_clk_i),
-        .dPulse(fsm_done_synced)
-    );
-
-    SyncPulse load_done_sync (
-        .sCLK(clkmux_clk),
-        .sRST(),  // not needed
-        .sEN(load_done),
-        .dCLK(wb_clk_i),
-        .dPulse(load_done_synced)
-    );
-
-    SyncPulse send_done_sync (
-        .sCLK(clkmux_clk),
-        .sRST(),  // not needed
-        .sEN(send_done),
-        .dCLK(wb_clk_i),
-        .dPulse(send_done_synced)
-    );
-
     SyncBit wbs_mode_sync (
         .sCLK(wb_clk_i),
         .sRST(wb_rst_n_sync),
@@ -335,6 +324,18 @@ module user_proj_example #(
         .dCLK(io_clk),
         .dD_OUT(wbs_cfg_done_synced)
     );
+
+    always @(posedge io_clk, negedge io_rst_n) begin
+        if (~io_rst_n) begin
+            wbs_busy_synced_r <= 1'b0;
+            wbs_done_synced_r <= 1'b0;
+            wbs_cfg_done_synced_r <= 1'b0;
+        end else begin
+            wbs_busy_synced_r <= wbs_busy_synced;
+            wbs_done_synced_r <= wbs_done_synced;
+            wbs_cfg_done_synced_r <= wbs_cfg_done_synced;
+        end
+    end
 
 
 endmodule
@@ -416,6 +417,7 @@ module BitonicSorter (
 	idx_in_5,
 	idx_in_6,
 	idx_in_7,
+	leaf_idx_in,
 	query_first_in,
 	query_last_in,
 	rst_n,
@@ -428,6 +430,7 @@ module BitonicSorter (
 	idx_out_1,
 	idx_out_2,
 	idx_out_3,
+	leaf_idx_out,
 	query_first_out,
 	query_last_out,
 	valid_out
@@ -441,14 +444,15 @@ module BitonicSorter (
 	input wire [24:0] data_in_5;
 	input wire [24:0] data_in_6;
 	input wire [24:0] data_in_7;
-	input wire [14:0] idx_in_0;
-	input wire [14:0] idx_in_1;
-	input wire [14:0] idx_in_2;
-	input wire [14:0] idx_in_3;
-	input wire [14:0] idx_in_4;
-	input wire [14:0] idx_in_5;
-	input wire [14:0] idx_in_6;
-	input wire [14:0] idx_in_7;
+	input wire [8:0] idx_in_0;
+	input wire [8:0] idx_in_1;
+	input wire [8:0] idx_in_2;
+	input wire [8:0] idx_in_3;
+	input wire [8:0] idx_in_4;
+	input wire [8:0] idx_in_5;
+	input wire [8:0] idx_in_6;
+	input wire [8:0] idx_in_7;
+	input wire [5:0] leaf_idx_in;
 	input wire query_first_in;
 	input wire query_last_in;
 	input wire rst_n;
@@ -457,32 +461,38 @@ module BitonicSorter (
 	output wire [24:0] data_out_1;
 	output wire [24:0] data_out_2;
 	output wire [24:0] data_out_3;
-	output wire [14:0] idx_out_0;
-	output wire [14:0] idx_out_1;
-	output wire [14:0] idx_out_2;
-	output wire [14:0] idx_out_3;
+	output wire [8:0] idx_out_0;
+	output wire [8:0] idx_out_1;
+	output wire [8:0] idx_out_2;
+	output wire [8:0] idx_out_3;
+	output reg [5:0] leaf_idx_out;
 	output wire query_first_out;
 	output wire query_last_out;
 	output wire valid_out;
+	reg [5:0] leaf_idx_r0;
+	reg [5:0] leaf_idx_r1;
+	reg [5:0] leaf_idx_r2;
+	reg [5:0] leaf_idx_r3;
+	reg [5:0] leaf_idx_r4;
 	reg [5:0] query_first_shft;
 	reg [5:0] query_last_shft;
 	reg [24:0] stage0_data [7:0];
-	reg [14:0] stage0_idx [7:0];
+	reg [8:0] stage0_idx [7:0];
 	reg stage0_valid;
 	reg [24:0] stage1_data [7:0];
-	reg [14:0] stage1_idx [7:0];
+	reg [8:0] stage1_idx [7:0];
 	reg stage1_valid;
 	reg [24:0] stage2_data [7:0];
-	reg [14:0] stage2_idx [7:0];
+	reg [8:0] stage2_idx [7:0];
 	reg stage2_valid;
 	reg [24:0] stage3_data [3:0];
-	reg [14:0] stage3_idx [3:0];
+	reg [8:0] stage3_idx [3:0];
 	reg stage3_valid;
 	reg [24:0] stage4_data [3:0];
-	reg [14:0] stage4_idx [3:0];
+	reg [8:0] stage4_idx [3:0];
 	reg stage4_valid;
 	reg [24:0] stage5_data [3:0];
-	reg [14:0] stage5_idx [3:0];
+	reg [8:0] stage5_idx [3:0];
 	reg stage5_valid;
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n) begin
@@ -507,7 +517,7 @@ module BitonicSorter (
 				for (p = 0; p < 8; p = p + 1)
 					begin
 						stage0_data[sv2v_cast_3(p)] <= 25'h0000000;
-						stage0_idx[sv2v_cast_3(p)] <= 15'h0000;
+						stage0_idx[sv2v_cast_3(p)] <= 9'h000;
 					end
 			end
 		end
@@ -540,7 +550,7 @@ module BitonicSorter (
 				for (p = 0; p < 8; p = p + 1)
 					begin
 						stage1_data[sv2v_cast_3(p)] <= 25'h0000000;
-						stage1_idx[sv2v_cast_3(p)] <= 15'h0000;
+						stage1_idx[sv2v_cast_3(p)] <= 9'h000;
 					end
 			end
 		end
@@ -573,7 +583,7 @@ module BitonicSorter (
 				for (p = 0; p < 8; p = p + 1)
 					begin
 						stage2_data[sv2v_cast_3(p)] <= 25'h0000000;
-						stage2_idx[sv2v_cast_3(p)] <= 15'h0000;
+						stage2_idx[sv2v_cast_3(p)] <= 9'h000;
 					end
 			end
 		end
@@ -610,7 +620,7 @@ module BitonicSorter (
 				for (p = 0; p < 4; p = p + 1)
 					begin
 						stage3_data[sv2v_cast_2(p)] <= 25'h0000000;
-						stage3_idx[sv2v_cast_2(p)] <= 15'h0000;
+						stage3_idx[sv2v_cast_2(p)] <= 9'h000;
 					end
 			end
 		end
@@ -635,7 +645,7 @@ module BitonicSorter (
 				for (p = 0; p < 4; p = p + 1)
 					begin
 						stage4_data[sv2v_cast_2(p)] <= 25'h0000000;
-						stage4_idx[sv2v_cast_2(p)] <= 15'h0000;
+						stage4_idx[sv2v_cast_2(p)] <= 9'h000;
 					end
 			end
 		end
@@ -660,7 +670,7 @@ module BitonicSorter (
 				for (p = 0; p < 4; p = p + 1)
 					begin
 						stage5_data[sv2v_cast_2(p)] <= 25'h0000000;
-						stage5_idx[sv2v_cast_2(p)] <= 15'h0000;
+						stage5_idx[sv2v_cast_2(p)] <= 9'h000;
 					end
 			end
 		end
@@ -686,6 +696,29 @@ module BitonicSorter (
 	assign idx_out_2 = stage5_idx[2];
 	assign data_out_3 = stage5_data[3];
 	assign idx_out_3 = stage5_idx[3];
+	always @(posedge clk or negedge rst_n)
+		if (~rst_n) begin
+			leaf_idx_r0 <= 6'h00;
+			leaf_idx_r1 <= 6'h00;
+			leaf_idx_r2 <= 6'h00;
+			leaf_idx_r3 <= 6'h00;
+			leaf_idx_r4 <= 6'h00;
+			leaf_idx_out <= 6'h00;
+		end
+		else begin
+			if (valid_in)
+				leaf_idx_r0 <= leaf_idx_in;
+			if (stage0_valid)
+				leaf_idx_r1 <= leaf_idx_r0;
+			if (stage1_valid)
+				leaf_idx_r2 <= leaf_idx_r1;
+			if (stage2_valid)
+				leaf_idx_r3 <= leaf_idx_r2;
+			if (stage3_valid)
+				leaf_idx_r4 <= leaf_idx_r3;
+			if (stage4_valid)
+				leaf_idx_out <= leaf_idx_r4;
+		end
 endmodule
 module ClockMux (
 	select,
@@ -1297,109 +1330,128 @@ module L2Kernel (
 	reg [5:0] leaf_idx_r1;
 	reg [5:0] leaf_idx_r2;
 	reg [5:0] leaf_idx_r3;
+	reg [5:0] leaf_idx_r4;
 	reg [22:0] p0_add_tree0 [2:0];
 	reg [23:0] p0_add_tree1 [1:0];
 	reg [24:0] p0_add_tree2;
+	reg signed [54:0] p0_data_in_r;
 	reg signed [21:0] p0_diff2 [4:0];
 	reg [21:0] p0_diff2_unsigned [4:0];
 	reg [8:0] p0_idx_r0;
 	reg [8:0] p0_idx_r1;
 	reg [8:0] p0_idx_r2;
 	reg [8:0] p0_idx_r3;
+	reg [8:0] p0_idx_r4;
 	reg signed [10:0] p0_patch_diff [4:0];
 	reg [22:0] p1_add_tree0 [2:0];
 	reg [23:0] p1_add_tree1 [1:0];
 	reg [24:0] p1_add_tree2;
+	reg signed [54:0] p1_data_in_r;
 	reg signed [21:0] p1_diff2 [4:0];
 	reg [21:0] p1_diff2_unsigned [4:0];
 	reg [8:0] p1_idx_r0;
 	reg [8:0] p1_idx_r1;
 	reg [8:0] p1_idx_r2;
 	reg [8:0] p1_idx_r3;
+	reg [8:0] p1_idx_r4;
 	reg signed [10:0] p1_patch_diff [4:0];
 	reg [22:0] p2_add_tree0 [2:0];
 	reg [23:0] p2_add_tree1 [1:0];
 	reg [24:0] p2_add_tree2;
+	reg signed [54:0] p2_data_in_r;
 	reg signed [21:0] p2_diff2 [4:0];
 	reg [21:0] p2_diff2_unsigned [4:0];
 	reg [8:0] p2_idx_r0;
 	reg [8:0] p2_idx_r1;
 	reg [8:0] p2_idx_r2;
 	reg [8:0] p2_idx_r3;
+	reg [8:0] p2_idx_r4;
 	reg signed [10:0] p2_patch_diff [4:0];
 	reg [22:0] p3_add_tree0 [2:0];
 	reg [23:0] p3_add_tree1 [1:0];
 	reg [24:0] p3_add_tree2;
+	reg signed [54:0] p3_data_in_r;
 	reg signed [21:0] p3_diff2 [4:0];
 	reg [21:0] p3_diff2_unsigned [4:0];
 	reg [8:0] p3_idx_r0;
 	reg [8:0] p3_idx_r1;
 	reg [8:0] p3_idx_r2;
 	reg [8:0] p3_idx_r3;
+	reg [8:0] p3_idx_r4;
 	reg signed [10:0] p3_patch_diff [4:0];
 	reg [22:0] p4_add_tree0 [2:0];
 	reg [23:0] p4_add_tree1 [1:0];
 	reg [24:0] p4_add_tree2;
+	reg signed [54:0] p4_data_in_r;
 	reg signed [21:0] p4_diff2 [4:0];
 	reg [21:0] p4_diff2_unsigned [4:0];
 	reg [8:0] p4_idx_r0;
 	reg [8:0] p4_idx_r1;
 	reg [8:0] p4_idx_r2;
 	reg [8:0] p4_idx_r3;
+	reg [8:0] p4_idx_r4;
 	reg signed [10:0] p4_patch_diff [4:0];
 	reg [22:0] p5_add_tree0 [2:0];
 	reg [23:0] p5_add_tree1 [1:0];
 	reg [24:0] p5_add_tree2;
+	reg signed [54:0] p5_data_in_r;
 	reg signed [21:0] p5_diff2 [4:0];
 	reg [21:0] p5_diff2_unsigned [4:0];
 	reg [8:0] p5_idx_r0;
 	reg [8:0] p5_idx_r1;
 	reg [8:0] p5_idx_r2;
 	reg [8:0] p5_idx_r3;
+	reg [8:0] p5_idx_r4;
 	reg signed [10:0] p5_patch_diff [4:0];
 	reg [22:0] p6_add_tree0 [2:0];
 	reg [23:0] p6_add_tree1 [1:0];
 	reg [24:0] p6_add_tree2;
+	reg signed [54:0] p6_data_in_r;
 	reg signed [21:0] p6_diff2 [4:0];
 	reg [21:0] p6_diff2_unsigned [4:0];
 	reg [8:0] p6_idx_r0;
 	reg [8:0] p6_idx_r1;
 	reg [8:0] p6_idx_r2;
 	reg [8:0] p6_idx_r3;
+	reg [8:0] p6_idx_r4;
 	reg signed [10:0] p6_patch_diff [4:0];
 	reg [22:0] p7_add_tree0 [2:0];
 	reg [23:0] p7_add_tree1 [1:0];
 	reg [24:0] p7_add_tree2;
+	reg signed [54:0] p7_data_in_r;
 	reg signed [21:0] p7_diff2 [4:0];
 	reg [21:0] p7_diff2_unsigned [4:0];
 	reg [8:0] p7_idx_r0;
 	reg [8:0] p7_idx_r1;
 	reg [8:0] p7_idx_r2;
 	reg [8:0] p7_idx_r3;
+	reg [8:0] p7_idx_r4;
 	reg signed [10:0] p7_patch_diff [4:0];
-	reg [4:0] query_first_shft;
-	reg [4:0] query_last_shft;
-	reg [4:0] valid_shft;
+	reg [5:0] query_first_shft;
+	reg [5:0] query_last_shft;
+	reg signed [54:0] query_patch_in_r;
+	reg [5:0] valid_shft;
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n) begin
-			query_first_shft <= 5'h00;
-			query_last_shft <= 5'h00;
-			valid_shft <= 5'h00;
+			query_first_shft <= 6'h00;
+			query_last_shft <= 6'h00;
+			valid_shft <= 6'h00;
 		end
 		else begin
-			query_first_shft <= {query_first_shft[3:0], query_first_in};
-			query_last_shft <= {query_last_shft[3:0], query_last_in};
-			valid_shft <= {valid_shft[3:0], query_valid};
+			query_first_shft <= {query_first_shft[4:0], query_first_in};
+			query_last_shft <= {query_last_shft[4:0], query_last_in};
+			valid_shft <= {valid_shft[4:0], query_valid};
 		end
-	assign query_first_out = query_first_shft[4];
-	assign query_last_out = query_last_shft[4];
-	assign dist_valid = valid_shft[4];
+	assign query_first_out = query_first_shft[5];
+	assign query_last_out = query_last_shft[5];
+	assign dist_valid = valid_shft[5];
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n) begin
 			leaf_idx_r0 <= 6'h00;
 			leaf_idx_r1 <= 6'h00;
 			leaf_idx_r2 <= 6'h00;
 			leaf_idx_r3 <= 6'h00;
+			leaf_idx_r4 <= 6'h00;
 			leaf_idx_out <= 6'h00;
 		end
 		else begin
@@ -1412,14 +1464,22 @@ module L2Kernel (
 			if (valid_shft[2])
 				leaf_idx_r3 <= leaf_idx_r2;
 			if (valid_shft[3])
-				leaf_idx_out <= leaf_idx_r3;
+				leaf_idx_r4 <= leaf_idx_r3;
+			if (valid_shft[4])
+				leaf_idx_out <= leaf_idx_r4;
 		end
+	always @(posedge clk or negedge rst_n)
+		if (~rst_n)
+			query_patch_in_r <= 55'h00000000000000;
+		else if (query_valid)
+			query_patch_in_r <= query_patch;
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n) begin
 			p0_idx_r0 <= 9'h000;
 			p0_idx_r1 <= 9'h000;
 			p0_idx_r2 <= 9'h000;
 			p0_idx_r3 <= 9'h000;
+			p0_idx_r4 <= 9'h000;
 			p0_idx_out <= 9'h000;
 		end
 		else begin
@@ -1432,8 +1492,15 @@ module L2Kernel (
 			if (valid_shft[2])
 				p0_idx_r3 <= p0_idx_r2;
 			if (valid_shft[3])
-				p0_idx_out <= p0_idx_r3;
+				p0_idx_r4 <= p0_idx_r3;
+			if (valid_shft[4])
+				p0_idx_out <= p0_idx_r4;
 		end
+	always @(posedge clk or negedge rst_n)
+		if (~rst_n)
+			p0_data_in_r <= 55'h00000000000000;
+		else if (query_valid)
+			p0_data_in_r <= p0_data;
 	function automatic [2:0] sv2v_cast_3;
 		input reg [2:0] inp;
 		sv2v_cast_3 = inp;
@@ -1444,10 +1511,10 @@ module L2Kernel (
 			for (p = 0; p < 5; p = p + 1)
 				p0_patch_diff[sv2v_cast_3(p)] <= 11'h000;
 		end
-		else if (query_valid) begin : sv2v_autoblock_2
+		else if (valid_shft[0]) begin : sv2v_autoblock_2
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
-				p0_patch_diff[sv2v_cast_3(p)] <= query_patch[sv2v_cast_3(p) * 11+:11] - p0_data[sv2v_cast_3(p) * 11+:11];
+				p0_patch_diff[sv2v_cast_3(p)] <= query_patch_in_r[sv2v_cast_3(p) * 11+:11] - p0_data_in_r[sv2v_cast_3(p) * 11+:11];
 		end
 	function automatic [21:0] sv2v_cast_22;
 		input reg [21:0] inp;
@@ -1464,7 +1531,7 @@ module L2Kernel (
 			for (p = 0; p < 5; p = p + 1)
 				p0_diff2_unsigned[sv2v_cast_3(p)] <= 22'h000000;
 		end
-		else if (valid_shft[0]) begin : sv2v_autoblock_5
+		else if (valid_shft[1]) begin : sv2v_autoblock_5
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p0_diff2_unsigned[sv2v_cast_3(p)] <= $unsigned(p0_diff2[sv2v_cast_3(p)]);
@@ -1491,16 +1558,16 @@ module L2Kernel (
 			p0_add_tree2 <= 25'h0000000;
 		end
 		else begin
-			if (valid_shft[1]) begin
+			if (valid_shft[2]) begin
 				p0_add_tree0[0] <= sv2v_cast_23(p0_diff2_unsigned[0]) + sv2v_cast_23(p0_diff2_unsigned[1]);
 				p0_add_tree0[1] <= sv2v_cast_23(p0_diff2_unsigned[2]) + sv2v_cast_23(p0_diff2_unsigned[3]);
 				p0_add_tree0[2] <= sv2v_cast_23(p0_diff2_unsigned[4]);
 			end
-			if (valid_shft[2]) begin
+			if (valid_shft[3]) begin
 				p0_add_tree1[0] <= sv2v_cast_24(p0_add_tree0[0]) + sv2v_cast_24(p0_add_tree0[1]);
 				p0_add_tree1[1] <= sv2v_cast_24(p0_add_tree0[2]);
 			end
-			if (valid_shft[3])
+			if (valid_shft[4])
 				p0_add_tree2 <= sv2v_cast_25(p0_add_tree1[0]) + sv2v_cast_25(p0_add_tree1[1]);
 		end
 	assign p0_l2_dist = p0_add_tree2;
@@ -1510,6 +1577,7 @@ module L2Kernel (
 			p1_idx_r1 <= 9'h000;
 			p1_idx_r2 <= 9'h000;
 			p1_idx_r3 <= 9'h000;
+			p1_idx_r4 <= 9'h000;
 			p1_idx_out <= 9'h000;
 		end
 		else begin
@@ -1522,18 +1590,25 @@ module L2Kernel (
 			if (valid_shft[2])
 				p1_idx_r3 <= p1_idx_r2;
 			if (valid_shft[3])
-				p1_idx_out <= p1_idx_r3;
+				p1_idx_r4 <= p1_idx_r3;
+			if (valid_shft[4])
+				p1_idx_out <= p1_idx_r4;
 		end
+	always @(posedge clk or negedge rst_n)
+		if (~rst_n)
+			p1_data_in_r <= 55'h00000000000000;
+		else if (query_valid)
+			p1_data_in_r <= p1_data;
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n) begin : sv2v_autoblock_6
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p1_patch_diff[sv2v_cast_3(p)] <= 11'h000;
 		end
-		else if (query_valid) begin : sv2v_autoblock_7
+		else if (valid_shft[0]) begin : sv2v_autoblock_7
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
-				p1_patch_diff[sv2v_cast_3(p)] <= query_patch[sv2v_cast_3(p) * 11+:11] - p1_data[sv2v_cast_3(p) * 11+:11];
+				p1_patch_diff[sv2v_cast_3(p)] <= query_patch_in_r[sv2v_cast_3(p) * 11+:11] - p1_data_in_r[sv2v_cast_3(p) * 11+:11];
 		end
 	always @(*) begin : sv2v_autoblock_8
 		reg [31:0] p;
@@ -1546,7 +1621,7 @@ module L2Kernel (
 			for (p = 0; p < 5; p = p + 1)
 				p1_diff2_unsigned[sv2v_cast_3(p)] <= 22'h000000;
 		end
-		else if (valid_shft[0]) begin : sv2v_autoblock_10
+		else if (valid_shft[1]) begin : sv2v_autoblock_10
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p1_diff2_unsigned[sv2v_cast_3(p)] <= $unsigned(p1_diff2[sv2v_cast_3(p)]);
@@ -1561,16 +1636,16 @@ module L2Kernel (
 			p1_add_tree2 <= 25'h0000000;
 		end
 		else begin
-			if (valid_shft[1]) begin
+			if (valid_shft[2]) begin
 				p1_add_tree0[0] <= sv2v_cast_23(p1_diff2_unsigned[0]) + sv2v_cast_23(p1_diff2_unsigned[1]);
 				p1_add_tree0[1] <= sv2v_cast_23(p1_diff2_unsigned[2]) + sv2v_cast_23(p1_diff2_unsigned[3]);
 				p1_add_tree0[2] <= sv2v_cast_23(p1_diff2_unsigned[4]);
 			end
-			if (valid_shft[2]) begin
+			if (valid_shft[3]) begin
 				p1_add_tree1[0] <= sv2v_cast_24(p1_add_tree0[0]) + sv2v_cast_24(p1_add_tree0[1]);
 				p1_add_tree1[1] <= sv2v_cast_24(p1_add_tree0[2]);
 			end
-			if (valid_shft[3])
+			if (valid_shft[4])
 				p1_add_tree2 <= sv2v_cast_25(p1_add_tree1[0]) + sv2v_cast_25(p1_add_tree1[1]);
 		end
 	assign p1_l2_dist = p1_add_tree2;
@@ -1580,6 +1655,7 @@ module L2Kernel (
 			p2_idx_r1 <= 9'h000;
 			p2_idx_r2 <= 9'h000;
 			p2_idx_r3 <= 9'h000;
+			p2_idx_r4 <= 9'h000;
 			p2_idx_out <= 9'h000;
 		end
 		else begin
@@ -1592,18 +1668,25 @@ module L2Kernel (
 			if (valid_shft[2])
 				p2_idx_r3 <= p2_idx_r2;
 			if (valid_shft[3])
-				p2_idx_out <= p2_idx_r3;
+				p2_idx_r4 <= p2_idx_r3;
+			if (valid_shft[4])
+				p2_idx_out <= p2_idx_r4;
 		end
+	always @(posedge clk or negedge rst_n)
+		if (~rst_n)
+			p2_data_in_r <= 55'h00000000000000;
+		else if (query_valid)
+			p2_data_in_r <= p2_data;
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n) begin : sv2v_autoblock_11
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p2_patch_diff[sv2v_cast_3(p)] <= 11'h000;
 		end
-		else if (query_valid) begin : sv2v_autoblock_12
+		else if (valid_shft[0]) begin : sv2v_autoblock_12
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
-				p2_patch_diff[sv2v_cast_3(p)] <= query_patch[sv2v_cast_3(p) * 11+:11] - p2_data[sv2v_cast_3(p) * 11+:11];
+				p2_patch_diff[sv2v_cast_3(p)] <= query_patch_in_r[sv2v_cast_3(p) * 11+:11] - p2_data_in_r[sv2v_cast_3(p) * 11+:11];
 		end
 	always @(*) begin : sv2v_autoblock_13
 		reg [31:0] p;
@@ -1616,7 +1699,7 @@ module L2Kernel (
 			for (p = 0; p < 5; p = p + 1)
 				p2_diff2_unsigned[sv2v_cast_3(p)] <= 22'h000000;
 		end
-		else if (valid_shft[0]) begin : sv2v_autoblock_15
+		else if (valid_shft[1]) begin : sv2v_autoblock_15
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p2_diff2_unsigned[sv2v_cast_3(p)] <= $unsigned(p2_diff2[sv2v_cast_3(p)]);
@@ -1631,16 +1714,16 @@ module L2Kernel (
 			p2_add_tree2 <= 25'h0000000;
 		end
 		else begin
-			if (valid_shft[1]) begin
+			if (valid_shft[2]) begin
 				p2_add_tree0[0] <= sv2v_cast_23(p2_diff2_unsigned[0]) + sv2v_cast_23(p2_diff2_unsigned[1]);
 				p2_add_tree0[1] <= sv2v_cast_23(p2_diff2_unsigned[2]) + sv2v_cast_23(p2_diff2_unsigned[3]);
 				p2_add_tree0[2] <= sv2v_cast_23(p2_diff2_unsigned[4]);
 			end
-			if (valid_shft[2]) begin
+			if (valid_shft[3]) begin
 				p2_add_tree1[0] <= sv2v_cast_24(p2_add_tree0[0]) + sv2v_cast_24(p2_add_tree0[1]);
 				p2_add_tree1[1] <= sv2v_cast_24(p2_add_tree0[2]);
 			end
-			if (valid_shft[3])
+			if (valid_shft[4])
 				p2_add_tree2 <= sv2v_cast_25(p2_add_tree1[0]) + sv2v_cast_25(p2_add_tree1[1]);
 		end
 	assign p2_l2_dist = p2_add_tree2;
@@ -1650,6 +1733,7 @@ module L2Kernel (
 			p3_idx_r1 <= 9'h000;
 			p3_idx_r2 <= 9'h000;
 			p3_idx_r3 <= 9'h000;
+			p3_idx_r4 <= 9'h000;
 			p3_idx_out <= 9'h000;
 		end
 		else begin
@@ -1662,18 +1746,25 @@ module L2Kernel (
 			if (valid_shft[2])
 				p3_idx_r3 <= p3_idx_r2;
 			if (valid_shft[3])
-				p3_idx_out <= p3_idx_r3;
+				p3_idx_r4 <= p3_idx_r3;
+			if (valid_shft[4])
+				p3_idx_out <= p3_idx_r4;
 		end
+	always @(posedge clk or negedge rst_n)
+		if (~rst_n)
+			p3_data_in_r <= 55'h00000000000000;
+		else if (query_valid)
+			p3_data_in_r <= p3_data;
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n) begin : sv2v_autoblock_16
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p3_patch_diff[sv2v_cast_3(p)] <= 11'h000;
 		end
-		else if (query_valid) begin : sv2v_autoblock_17
+		else if (valid_shft[0]) begin : sv2v_autoblock_17
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
-				p3_patch_diff[sv2v_cast_3(p)] <= query_patch[sv2v_cast_3(p) * 11+:11] - p3_data[sv2v_cast_3(p) * 11+:11];
+				p3_patch_diff[sv2v_cast_3(p)] <= query_patch_in_r[sv2v_cast_3(p) * 11+:11] - p3_data_in_r[sv2v_cast_3(p) * 11+:11];
 		end
 	always @(*) begin : sv2v_autoblock_18
 		reg [31:0] p;
@@ -1686,7 +1777,7 @@ module L2Kernel (
 			for (p = 0; p < 5; p = p + 1)
 				p3_diff2_unsigned[sv2v_cast_3(p)] <= 22'h000000;
 		end
-		else if (valid_shft[0]) begin : sv2v_autoblock_20
+		else if (valid_shft[1]) begin : sv2v_autoblock_20
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p3_diff2_unsigned[sv2v_cast_3(p)] <= $unsigned(p3_diff2[sv2v_cast_3(p)]);
@@ -1701,16 +1792,16 @@ module L2Kernel (
 			p3_add_tree2 <= 25'h0000000;
 		end
 		else begin
-			if (valid_shft[1]) begin
+			if (valid_shft[2]) begin
 				p3_add_tree0[0] <= sv2v_cast_23(p3_diff2_unsigned[0]) + sv2v_cast_23(p3_diff2_unsigned[1]);
 				p3_add_tree0[1] <= sv2v_cast_23(p3_diff2_unsigned[2]) + sv2v_cast_23(p3_diff2_unsigned[3]);
 				p3_add_tree0[2] <= sv2v_cast_23(p3_diff2_unsigned[4]);
 			end
-			if (valid_shft[2]) begin
+			if (valid_shft[3]) begin
 				p3_add_tree1[0] <= sv2v_cast_24(p3_add_tree0[0]) + sv2v_cast_24(p3_add_tree0[1]);
 				p3_add_tree1[1] <= sv2v_cast_24(p3_add_tree0[2]);
 			end
-			if (valid_shft[3])
+			if (valid_shft[4])
 				p3_add_tree2 <= sv2v_cast_25(p3_add_tree1[0]) + sv2v_cast_25(p3_add_tree1[1]);
 		end
 	assign p3_l2_dist = p3_add_tree2;
@@ -1720,6 +1811,7 @@ module L2Kernel (
 			p4_idx_r1 <= 9'h000;
 			p4_idx_r2 <= 9'h000;
 			p4_idx_r3 <= 9'h000;
+			p4_idx_r4 <= 9'h000;
 			p4_idx_out <= 9'h000;
 		end
 		else begin
@@ -1732,18 +1824,25 @@ module L2Kernel (
 			if (valid_shft[2])
 				p4_idx_r3 <= p4_idx_r2;
 			if (valid_shft[3])
-				p4_idx_out <= p4_idx_r3;
+				p4_idx_r4 <= p4_idx_r3;
+			if (valid_shft[4])
+				p4_idx_out <= p4_idx_r4;
 		end
+	always @(posedge clk or negedge rst_n)
+		if (~rst_n)
+			p4_data_in_r <= 55'h00000000000000;
+		else if (query_valid)
+			p4_data_in_r <= p4_data;
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n) begin : sv2v_autoblock_21
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p4_patch_diff[sv2v_cast_3(p)] <= 11'h000;
 		end
-		else if (query_valid) begin : sv2v_autoblock_22
+		else if (valid_shft[0]) begin : sv2v_autoblock_22
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
-				p4_patch_diff[sv2v_cast_3(p)] <= query_patch[sv2v_cast_3(p) * 11+:11] - p4_data[sv2v_cast_3(p) * 11+:11];
+				p4_patch_diff[sv2v_cast_3(p)] <= query_patch_in_r[sv2v_cast_3(p) * 11+:11] - p4_data_in_r[sv2v_cast_3(p) * 11+:11];
 		end
 	always @(*) begin : sv2v_autoblock_23
 		reg [31:0] p;
@@ -1756,7 +1855,7 @@ module L2Kernel (
 			for (p = 0; p < 5; p = p + 1)
 				p4_diff2_unsigned[sv2v_cast_3(p)] <= 22'h000000;
 		end
-		else if (valid_shft[0]) begin : sv2v_autoblock_25
+		else if (valid_shft[1]) begin : sv2v_autoblock_25
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p4_diff2_unsigned[sv2v_cast_3(p)] <= $unsigned(p4_diff2[sv2v_cast_3(p)]);
@@ -1771,16 +1870,16 @@ module L2Kernel (
 			p4_add_tree2 <= 25'h0000000;
 		end
 		else begin
-			if (valid_shft[1]) begin
+			if (valid_shft[2]) begin
 				p4_add_tree0[0] <= sv2v_cast_23(p4_diff2_unsigned[0]) + sv2v_cast_23(p4_diff2_unsigned[1]);
 				p4_add_tree0[1] <= sv2v_cast_23(p4_diff2_unsigned[2]) + sv2v_cast_23(p4_diff2_unsigned[3]);
 				p4_add_tree0[2] <= sv2v_cast_23(p4_diff2_unsigned[4]);
 			end
-			if (valid_shft[2]) begin
+			if (valid_shft[3]) begin
 				p4_add_tree1[0] <= sv2v_cast_24(p4_add_tree0[0]) + sv2v_cast_24(p4_add_tree0[1]);
 				p4_add_tree1[1] <= sv2v_cast_24(p4_add_tree0[2]);
 			end
-			if (valid_shft[3])
+			if (valid_shft[4])
 				p4_add_tree2 <= sv2v_cast_25(p4_add_tree1[0]) + sv2v_cast_25(p4_add_tree1[1]);
 		end
 	assign p4_l2_dist = p4_add_tree2;
@@ -1790,6 +1889,7 @@ module L2Kernel (
 			p5_idx_r1 <= 9'h000;
 			p5_idx_r2 <= 9'h000;
 			p5_idx_r3 <= 9'h000;
+			p5_idx_r4 <= 9'h000;
 			p5_idx_out <= 9'h000;
 		end
 		else begin
@@ -1802,18 +1902,25 @@ module L2Kernel (
 			if (valid_shft[2])
 				p5_idx_r3 <= p5_idx_r2;
 			if (valid_shft[3])
-				p5_idx_out <= p5_idx_r3;
+				p5_idx_r4 <= p5_idx_r3;
+			if (valid_shft[4])
+				p5_idx_out <= p5_idx_r4;
 		end
+	always @(posedge clk or negedge rst_n)
+		if (~rst_n)
+			p5_data_in_r <= 55'h00000000000000;
+		else if (query_valid)
+			p5_data_in_r <= p5_data;
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n) begin : sv2v_autoblock_26
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p5_patch_diff[sv2v_cast_3(p)] <= 11'h000;
 		end
-		else if (query_valid) begin : sv2v_autoblock_27
+		else if (valid_shft[0]) begin : sv2v_autoblock_27
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
-				p5_patch_diff[sv2v_cast_3(p)] <= query_patch[sv2v_cast_3(p) * 11+:11] - p5_data[sv2v_cast_3(p) * 11+:11];
+				p5_patch_diff[sv2v_cast_3(p)] <= query_patch_in_r[sv2v_cast_3(p) * 11+:11] - p5_data_in_r[sv2v_cast_3(p) * 11+:11];
 		end
 	always @(*) begin : sv2v_autoblock_28
 		reg [31:0] p;
@@ -1826,7 +1933,7 @@ module L2Kernel (
 			for (p = 0; p < 5; p = p + 1)
 				p5_diff2_unsigned[sv2v_cast_3(p)] <= 22'h000000;
 		end
-		else if (valid_shft[0]) begin : sv2v_autoblock_30
+		else if (valid_shft[1]) begin : sv2v_autoblock_30
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p5_diff2_unsigned[sv2v_cast_3(p)] <= $unsigned(p5_diff2[sv2v_cast_3(p)]);
@@ -1841,16 +1948,16 @@ module L2Kernel (
 			p5_add_tree2 <= 25'h0000000;
 		end
 		else begin
-			if (valid_shft[1]) begin
+			if (valid_shft[2]) begin
 				p5_add_tree0[0] <= sv2v_cast_23(p5_diff2_unsigned[0]) + sv2v_cast_23(p5_diff2_unsigned[1]);
 				p5_add_tree0[1] <= sv2v_cast_23(p5_diff2_unsigned[2]) + sv2v_cast_23(p5_diff2_unsigned[3]);
 				p5_add_tree0[2] <= sv2v_cast_23(p5_diff2_unsigned[4]);
 			end
-			if (valid_shft[2]) begin
+			if (valid_shft[3]) begin
 				p5_add_tree1[0] <= sv2v_cast_24(p5_add_tree0[0]) + sv2v_cast_24(p5_add_tree0[1]);
 				p5_add_tree1[1] <= sv2v_cast_24(p5_add_tree0[2]);
 			end
-			if (valid_shft[3])
+			if (valid_shft[4])
 				p5_add_tree2 <= sv2v_cast_25(p5_add_tree1[0]) + sv2v_cast_25(p5_add_tree1[1]);
 		end
 	assign p5_l2_dist = p5_add_tree2;
@@ -1860,6 +1967,7 @@ module L2Kernel (
 			p6_idx_r1 <= 9'h000;
 			p6_idx_r2 <= 9'h000;
 			p6_idx_r3 <= 9'h000;
+			p6_idx_r4 <= 9'h000;
 			p6_idx_out <= 9'h000;
 		end
 		else begin
@@ -1872,18 +1980,25 @@ module L2Kernel (
 			if (valid_shft[2])
 				p6_idx_r3 <= p6_idx_r2;
 			if (valid_shft[3])
-				p6_idx_out <= p6_idx_r3;
+				p6_idx_r4 <= p6_idx_r3;
+			if (valid_shft[4])
+				p6_idx_out <= p6_idx_r4;
 		end
+	always @(posedge clk or negedge rst_n)
+		if (~rst_n)
+			p6_data_in_r <= 55'h00000000000000;
+		else if (query_valid)
+			p6_data_in_r <= p6_data;
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n) begin : sv2v_autoblock_31
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p6_patch_diff[sv2v_cast_3(p)] <= 11'h000;
 		end
-		else if (query_valid) begin : sv2v_autoblock_32
+		else if (valid_shft[0]) begin : sv2v_autoblock_32
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
-				p6_patch_diff[sv2v_cast_3(p)] <= query_patch[sv2v_cast_3(p) * 11+:11] - p6_data[sv2v_cast_3(p) * 11+:11];
+				p6_patch_diff[sv2v_cast_3(p)] <= query_patch_in_r[sv2v_cast_3(p) * 11+:11] - p6_data_in_r[sv2v_cast_3(p) * 11+:11];
 		end
 	always @(*) begin : sv2v_autoblock_33
 		reg [31:0] p;
@@ -1896,7 +2011,7 @@ module L2Kernel (
 			for (p = 0; p < 5; p = p + 1)
 				p6_diff2_unsigned[sv2v_cast_3(p)] <= 22'h000000;
 		end
-		else if (valid_shft[0]) begin : sv2v_autoblock_35
+		else if (valid_shft[1]) begin : sv2v_autoblock_35
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p6_diff2_unsigned[sv2v_cast_3(p)] <= $unsigned(p6_diff2[sv2v_cast_3(p)]);
@@ -1911,16 +2026,16 @@ module L2Kernel (
 			p6_add_tree2 <= 25'h0000000;
 		end
 		else begin
-			if (valid_shft[1]) begin
+			if (valid_shft[2]) begin
 				p6_add_tree0[0] <= sv2v_cast_23(p6_diff2_unsigned[0]) + sv2v_cast_23(p6_diff2_unsigned[1]);
 				p6_add_tree0[1] <= sv2v_cast_23(p6_diff2_unsigned[2]) + sv2v_cast_23(p6_diff2_unsigned[3]);
 				p6_add_tree0[2] <= sv2v_cast_23(p6_diff2_unsigned[4]);
 			end
-			if (valid_shft[2]) begin
+			if (valid_shft[3]) begin
 				p6_add_tree1[0] <= sv2v_cast_24(p6_add_tree0[0]) + sv2v_cast_24(p6_add_tree0[1]);
 				p6_add_tree1[1] <= sv2v_cast_24(p6_add_tree0[2]);
 			end
-			if (valid_shft[3])
+			if (valid_shft[4])
 				p6_add_tree2 <= sv2v_cast_25(p6_add_tree1[0]) + sv2v_cast_25(p6_add_tree1[1]);
 		end
 	assign p6_l2_dist = p6_add_tree2;
@@ -1930,6 +2045,7 @@ module L2Kernel (
 			p7_idx_r1 <= 9'h000;
 			p7_idx_r2 <= 9'h000;
 			p7_idx_r3 <= 9'h000;
+			p7_idx_r4 <= 9'h000;
 			p7_idx_out <= 9'h000;
 		end
 		else begin
@@ -1942,18 +2058,25 @@ module L2Kernel (
 			if (valid_shft[2])
 				p7_idx_r3 <= p7_idx_r2;
 			if (valid_shft[3])
-				p7_idx_out <= p7_idx_r3;
+				p7_idx_r4 <= p7_idx_r3;
+			if (valid_shft[4])
+				p7_idx_out <= p7_idx_r4;
 		end
+	always @(posedge clk or negedge rst_n)
+		if (~rst_n)
+			p7_data_in_r <= 55'h00000000000000;
+		else if (query_valid)
+			p7_data_in_r <= p7_data;
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n) begin : sv2v_autoblock_36
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p7_patch_diff[sv2v_cast_3(p)] <= 11'h000;
 		end
-		else if (query_valid) begin : sv2v_autoblock_37
+		else if (valid_shft[0]) begin : sv2v_autoblock_37
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
-				p7_patch_diff[sv2v_cast_3(p)] <= query_patch[sv2v_cast_3(p) * 11+:11] - p7_data[sv2v_cast_3(p) * 11+:11];
+				p7_patch_diff[sv2v_cast_3(p)] <= query_patch_in_r[sv2v_cast_3(p) * 11+:11] - p7_data_in_r[sv2v_cast_3(p) * 11+:11];
 		end
 	always @(*) begin : sv2v_autoblock_38
 		reg [31:0] p;
@@ -1966,7 +2089,7 @@ module L2Kernel (
 			for (p = 0; p < 5; p = p + 1)
 				p7_diff2_unsigned[sv2v_cast_3(p)] <= 22'h000000;
 		end
-		else if (valid_shft[0]) begin : sv2v_autoblock_40
+		else if (valid_shft[1]) begin : sv2v_autoblock_40
 			reg [31:0] p;
 			for (p = 0; p < 5; p = p + 1)
 				p7_diff2_unsigned[sv2v_cast_3(p)] <= $unsigned(p7_diff2[sv2v_cast_3(p)]);
@@ -1981,16 +2104,16 @@ module L2Kernel (
 			p7_add_tree2 <= 25'h0000000;
 		end
 		else begin
-			if (valid_shft[1]) begin
+			if (valid_shft[2]) begin
 				p7_add_tree0[0] <= sv2v_cast_23(p7_diff2_unsigned[0]) + sv2v_cast_23(p7_diff2_unsigned[1]);
 				p7_add_tree0[1] <= sv2v_cast_23(p7_diff2_unsigned[2]) + sv2v_cast_23(p7_diff2_unsigned[3]);
 				p7_add_tree0[2] <= sv2v_cast_23(p7_diff2_unsigned[4]);
 			end
-			if (valid_shft[2]) begin
+			if (valid_shft[3]) begin
 				p7_add_tree1[0] <= sv2v_cast_24(p7_add_tree0[0]) + sv2v_cast_24(p7_add_tree0[1]);
 				p7_add_tree1[1] <= sv2v_cast_24(p7_add_tree0[2]);
 			end
-			if (valid_shft[3])
+			if (valid_shft[4])
 				p7_add_tree2 <= sv2v_cast_25(p7_add_tree1[0]) + sv2v_cast_25(p7_add_tree1[1]);
 		end
 	assign p7_l2_dist = p7_add_tree2;
@@ -2380,6 +2503,7 @@ module MainFSM (
 				k0_query_valid = 1'b1;
 				k0_query_last_in = 1'b1;
 				k0_query_patch = cur_query_patch0;
+				k1_exactfstrow = 1'b1;
 				k1_query_valid = 1'b1;
 				k1_query_last_in = 1'b1;
 				k1_query_patch = cur_query_patch1;
@@ -3679,12 +3803,18 @@ endmodule
 module top (
 	clk,
 	rst_n,
-	load_kdtree,
-	load_done,
-	fsm_start,
-	fsm_done,
-	send_best_arr,
-	send_done,
+	io_load_kdtree,
+	io_fsm_start,
+	io_send_best_arr,
+	io_load_done,
+	io_fsm_done,
+	io_send_done,
+	wb_clk_i,
+	wb_rst_n_i,
+	wbs_fsm_start,
+	wbs_load_done,
+	wbs_fsm_done,
+	wbs_send_done,
 	io_clk,
 	io_rst_n,
 	in_fifo_wenq,
@@ -3728,20 +3858,26 @@ module top (
 	parameter LEAF_ADDRW = $clog2(NUM_LEAVES);
 	input wire clk;
 	input wire rst_n;
-	input wire load_kdtree;
-	output reg load_done;
-	input wire fsm_start;
-	output reg fsm_done;
-	input wire send_best_arr;
-	output reg send_done;
+	input wire io_load_kdtree;
+	input wire io_fsm_start;
+	input wire io_send_best_arr;
+	output reg io_load_done;
+	output reg io_fsm_done;
+	output reg io_send_done;
+	input wire wb_clk_i;
+	input wire wb_rst_n_i;
+	input wire wbs_fsm_start;
+	output reg wbs_load_done;
+	output reg wbs_fsm_done;
+	output reg wbs_send_done;
 	input wire io_clk;
 	input wire io_rst_n;
 	input wire in_fifo_wenq;
 	input wire [DATA_WIDTH - 1:0] in_fifo_wdata;
-	output wire in_fifo_wfull_n;
+	output reg in_fifo_wfull_n;
 	input wire out_fifo_deq;
-	output wire [DATA_WIDTH - 1:0] out_fifo_rdata;
-	output wire out_fifo_rempty_n;
+	output reg [DATA_WIDTH - 1:0] out_fifo_rdata;
+	output reg out_fifo_rempty_n;
 	input wire wbs_debug;
 	input wire wbs_qp_mem_csb0;
 	input wire wbs_qp_mem_web0;
@@ -3752,7 +3888,7 @@ module top (
 	input wire [LEAF_SIZE - 1:0] wbs_leaf_mem_web0;
 	input wire [LEAF_ADDRW - 1:0] wbs_leaf_mem_addr0;
 	input wire [63:0] wbs_leaf_mem_wleaf0;
-	output wire [(LEAF_SIZE * 64) - 1:0] wbs_leaf_mem_rleaf0;
+	output wire [511:0] wbs_leaf_mem_rleaf0;
 	input wire wbs_best_arr_csb1;
 	input wire [7:0] wbs_best_arr_addr1;
 	output wire [63:0] wbs_best_arr_rdata1;
@@ -3761,12 +3897,29 @@ module top (
 	input wire [5:0] wbs_node_mem_addr;
 	input wire [(2 * DATA_WIDTH) - 1:0] wbs_node_mem_wdata;
 	output wire [(2 * DATA_WIDTH) - 1:0] wbs_node_mem_rdata;
-	reg load_kdtree_r;
+	reg in_fifo_wenq_r;
+	reg [DATA_WIDTH - 1:0] in_fifo_wdata_r;
+	wire in_fifo_wfull_n_w;
+	reg out_fifo_deq_r;
+	wire [DATA_WIDTH - 1:0] out_fifo_rdata_w;
+	wire out_fifo_rempty_n_w;
 	wire load_done_w;
-	reg fsm_start_r;
 	wire fsm_done_w;
-	reg send_best_arr_r;
 	wire send_done_w;
+	reg io_load_kdtree_r;
+	reg io_fsm_start_r;
+	reg io_send_best_arr_r;
+	wire io_load_kdtree_synced;
+	wire io_load_done_synced;
+	wire io_fsm_start_synced;
+	wire io_fsm_done_synced;
+	wire io_send_best_arr_synced;
+	wire io_send_done_synced;
+	reg wbs_fsm_start_r;
+	wire wbs_fsm_start_synced;
+	wire wbs_load_done_synced;
+	wire wbs_fsm_done_synced;
+	wire wbs_send_done_synced;
 	wire in_fifo_deq;
 	wire [DATA_WIDTH - 1:0] in_fifo_rdata;
 	wire in_fifo_rempty_n;
@@ -3875,22 +4028,24 @@ module top (
 	wire [DIST_WIDTH - 1:0] s0_data_in_5;
 	wire [DIST_WIDTH - 1:0] s0_data_in_6;
 	wire [DIST_WIDTH - 1:0] s0_data_in_7;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s0_idx_in_0;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s0_idx_in_1;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s0_idx_in_2;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s0_idx_in_3;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s0_idx_in_4;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s0_idx_in_5;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s0_idx_in_6;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s0_idx_in_7;
+	wire [IDX_WIDTH - 1:0] s0_idx_in_0;
+	wire [IDX_WIDTH - 1:0] s0_idx_in_1;
+	wire [IDX_WIDTH - 1:0] s0_idx_in_2;
+	wire [IDX_WIDTH - 1:0] s0_idx_in_3;
+	wire [IDX_WIDTH - 1:0] s0_idx_in_4;
+	wire [IDX_WIDTH - 1:0] s0_idx_in_5;
+	wire [IDX_WIDTH - 1:0] s0_idx_in_6;
+	wire [IDX_WIDTH - 1:0] s0_idx_in_7;
+	wire [LEAF_ADDRW - 1:0] s0_leaf_idx_in;
+	wire [LEAF_ADDRW - 1:0] s0_leaf_idx_out;
 	wire [DIST_WIDTH - 1:0] s0_data_out_0;
 	wire [DIST_WIDTH - 1:0] s0_data_out_1;
 	wire [DIST_WIDTH - 1:0] s0_data_out_2;
 	wire [DIST_WIDTH - 1:0] s0_data_out_3;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s0_idx_out_0;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s0_idx_out_1;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s0_idx_out_2;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s0_idx_out_3;
+	wire [IDX_WIDTH - 1:0] s0_idx_out_0;
+	wire [IDX_WIDTH - 1:0] s0_idx_out_1;
+	wire [IDX_WIDTH - 1:0] s0_idx_out_2;
+	wire [IDX_WIDTH - 1:0] s0_idx_out_3;
 	wire sl0_restart;
 	wire sl0_insert;
 	wire sl0_last_in;
@@ -3962,22 +4117,24 @@ module top (
 	wire [DIST_WIDTH - 1:0] s1_data_in_5;
 	wire [DIST_WIDTH - 1:0] s1_data_in_6;
 	wire [DIST_WIDTH - 1:0] s1_data_in_7;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s1_idx_in_0;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s1_idx_in_1;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s1_idx_in_2;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s1_idx_in_3;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s1_idx_in_4;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s1_idx_in_5;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s1_idx_in_6;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s1_idx_in_7;
+	wire [IDX_WIDTH - 1:0] s1_idx_in_0;
+	wire [IDX_WIDTH - 1:0] s1_idx_in_1;
+	wire [IDX_WIDTH - 1:0] s1_idx_in_2;
+	wire [IDX_WIDTH - 1:0] s1_idx_in_3;
+	wire [IDX_WIDTH - 1:0] s1_idx_in_4;
+	wire [IDX_WIDTH - 1:0] s1_idx_in_5;
+	wire [IDX_WIDTH - 1:0] s1_idx_in_6;
+	wire [IDX_WIDTH - 1:0] s1_idx_in_7;
+	wire [LEAF_ADDRW - 1:0] s1_leaf_idx_in;
+	wire [LEAF_ADDRW - 1:0] s1_leaf_idx_out;
 	wire [DIST_WIDTH - 1:0] s1_data_out_0;
 	wire [DIST_WIDTH - 1:0] s1_data_out_1;
 	wire [DIST_WIDTH - 1:0] s1_data_out_2;
 	wire [DIST_WIDTH - 1:0] s1_data_out_3;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s1_idx_out_0;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s1_idx_out_1;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s1_idx_out_2;
-	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] s1_idx_out_3;
+	wire [IDX_WIDTH - 1:0] s1_idx_out_0;
+	wire [IDX_WIDTH - 1:0] s1_idx_out_1;
+	wire [IDX_WIDTH - 1:0] s1_idx_out_2;
+	wire [IDX_WIDTH - 1:0] s1_idx_out_3;
 	wire sl1_restart;
 	wire sl1_insert;
 	wire sl1_last_in;
@@ -3993,23 +4150,118 @@ module top (
 	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] sl1_merged_idx_2;
 	wire [(LEAF_ADDRW + IDX_WIDTH) - 1:0] sl1_merged_idx_3;
 	wire [(K * LEAF_ADDRW) - 1:0] computes1_leaf_idx;
-	always @(posedge clk or negedge rst_n)
-		if (~rst_n) begin
-			load_kdtree_r <= 1'sb0;
-			fsm_start_r <= 1'sb0;
-			send_best_arr_r <= 1'sb0;
-			load_done <= 1'sb0;
-			fsm_done <= 1'sb0;
-			send_done <= 1'sb0;
+	always @(posedge io_clk or negedge io_rst_n)
+		if (~io_rst_n) begin
+			io_load_kdtree_r <= 1'sb0;
+			io_fsm_start_r <= 1'sb0;
+			io_send_best_arr_r <= 1'sb0;
+			io_load_done <= 1'sb0;
+			io_fsm_done <= 1'sb0;
+			io_send_done <= 1'sb0;
+			in_fifo_wenq_r <= 1'sb0;
+			in_fifo_wdata_r <= 1'sb0;
+			in_fifo_wfull_n <= 1'sb0;
+			out_fifo_deq_r <= 1'sb0;
+			out_fifo_rdata <= 1'sb0;
+			out_fifo_rempty_n <= 1'sb0;
 		end
 		else begin
-			load_kdtree_r <= load_kdtree;
-			fsm_start_r <= fsm_start;
-			send_best_arr_r <= send_best_arr;
-			load_done <= load_done_w;
-			fsm_done <= fsm_done_w;
-			send_done <= send_done_w;
+			io_load_kdtree_r <= io_load_kdtree;
+			io_fsm_start_r <= io_fsm_start;
+			io_send_best_arr_r <= io_send_best_arr;
+			io_load_done <= io_load_done_synced;
+			io_fsm_done <= io_fsm_done_synced;
+			io_send_done <= io_send_done_synced;
+			in_fifo_wenq_r <= in_fifo_wenq;
+			in_fifo_wdata_r <= in_fifo_wdata;
+			in_fifo_wfull_n <= in_fifo_wfull_n_w;
+			out_fifo_deq_r <= out_fifo_deq;
+			out_fifo_rdata <= out_fifo_rdata_w;
+			out_fifo_rempty_n <= out_fifo_rempty_n_w;
 		end
+	always @(posedge wb_clk_i or negedge wb_rst_n_i)
+		if (~wb_rst_n_i) begin
+			wbs_fsm_start_r <= 1'sb0;
+			wbs_load_done <= 1'sb0;
+			wbs_fsm_done <= 1'sb0;
+			wbs_send_done <= 1'sb0;
+		end
+		else begin
+			wbs_fsm_start_r <= wbs_fsm_start;
+			wbs_load_done <= wbs_load_done_synced;
+			wbs_fsm_done <= wbs_fsm_done_synced;
+			wbs_send_done <= wbs_send_done_synced;
+		end
+	SyncPulse io_fsm_start_sync(
+		.sCLK(io_clk),
+		.sRST(io_rst_n),
+		.sEN(io_fsm_start_r),
+		.dCLK(clk),
+		.dPulse(io_fsm_start_synced)
+	);
+	SyncPulse io_load_kdtree_sync(
+		.sCLK(io_clk),
+		.sRST(io_rst_n),
+		.sEN(io_load_kdtree_r),
+		.dCLK(clk),
+		.dPulse(io_load_kdtree_synced)
+	);
+	SyncPulse io_send_best_arr_sync(
+		.sCLK(io_clk),
+		.sRST(io_rst_n),
+		.sEN(io_send_best_arr_r),
+		.dCLK(clk),
+		.dPulse(io_send_best_arr_synced)
+	);
+	SyncPulse io_fsm_done_sync(
+		.sCLK(clk),
+		.sRST(rst_n),
+		.sEN(fsm_done_w),
+		.dCLK(io_clk),
+		.dPulse(io_fsm_done_synced)
+	);
+	SyncPulse io_load_done_sync(
+		.sCLK(clk),
+		.sRST(rst_n),
+		.sEN(load_done_w),
+		.dCLK(io_clk),
+		.dPulse(io_load_done_synced)
+	);
+	SyncPulse io_send_done_sync(
+		.sCLK(clk),
+		.sRST(rst_n),
+		.sEN(send_done_w),
+		.dCLK(io_clk),
+		.dPulse(io_send_done_synced)
+	);
+	SyncPulse wbs_fsm_start_sync(
+		.sCLK(wb_clk_i),
+		.sRST(wb_rst_n_i),
+		.sEN(wbs_fsm_start_r),
+		.dCLK(clk),
+		.dPulse(wbs_fsm_start_synced)
+	);
+	SyncPulse wbs_fsm_done_sync(
+		.sCLK(clk),
+		.sRST(rst_n),
+		.sEN(fsm_done_w),
+		.dCLK(wb_clk_i),
+		.dPulse(wbs_fsm_done_synced)
+	);
+	SyncPulse wbs_load_done_sync(
+		.sCLK(clk),
+		.sRST(rst_n),
+		.sEN(load_done_w),
+		.dCLK(wb_clk_i),
+		.dPulse(wbs_load_done_synced)
+	);
+	SyncPulse wbs_send_done_sync(
+		.sCLK(clk),
+		.sRST(rst_n),
+		.sEN(send_done_w),
+		.dCLK(wb_clk_i),
+		.dPulse(wbs_send_done_synced)
+	);
 	MainFSM #(
 		.DATA_WIDTH(DATA_WIDTH),
 		.LEAF_SIZE(LEAF_SIZE),
@@ -4022,12 +4274,12 @@ module top (
 	) main_fsm_inst(
 		.clk(clk),
 		.rst_n(rst_n),
-		.load_kdtree(load_kdtree_r),
+		.load_kdtree(io_load_kdtree_synced),
 		.load_done(load_done_w),
-		.fsm_start(fsm_start_r),
+		.fsm_start(io_fsm_start_synced | wbs_fsm_start_synced),
 		.fsm_done(fsm_done_w),
 		.send_done(send_done_w),
-		.send_best_arr(send_best_arr_r),
+		.send_best_arr(io_send_best_arr_synced),
 		.agg_receiver_enq(agg_receiver_enq),
 		.agg_receiver_full_n(agg_receiver_full_n),
 		.agg_change_fetch_width(agg_change_fetch_width),
@@ -4079,9 +4331,9 @@ module top (
 	) input_fifo_inst(
 		.sCLK(io_clk),
 		.sRST(io_rst_n),
-		.sENQ(in_fifo_wenq),
-		.sD_IN(in_fifo_wdata),
-		.sFULL_N(in_fifo_wfull_n),
+		.sENQ(in_fifo_wenq_r),
+		.sD_IN(in_fifo_wdata_r),
+		.sFULL_N(in_fifo_wfull_n_w),
 		.dCLK(clk),
 		.dDEQ(in_fifo_deq),
 		.dD_OUT(in_fifo_rdata),
@@ -4121,9 +4373,9 @@ module top (
 		.sD_IN(out_fifo_wdata),
 		.sFULL_N(out_fifo_wfull_n),
 		.dCLK(io_clk),
-		.dDEQ(out_fifo_deq),
-		.dD_OUT(out_fifo_rdata),
-		.dEMPTY_N(out_fifo_rempty_n)
+		.dDEQ(out_fifo_deq_r),
+		.dD_OUT(out_fifo_rdata_w),
+		.dEMPTY_N(out_fifo_rempty_n_w)
 	);
 	always @(*)
 		case (out_fifo_wdata_sel)
@@ -4313,6 +4565,8 @@ module top (
 		.idx_in_5(s0_idx_in_5),
 		.idx_in_6(s0_idx_in_6),
 		.idx_in_7(s0_idx_in_7),
+		.leaf_idx_in(s0_leaf_idx_in),
+		.leaf_idx_out(s0_leaf_idx_out),
 		.data_out_0(s0_data_out_0),
 		.data_out_1(s0_data_out_1),
 		.data_out_2(s0_data_out_2),
@@ -4324,23 +4578,24 @@ module top (
 	);
 	assign s0_query_first_in = k0_query_first_out;
 	assign s0_query_last_in = k0_query_last_out;
-	assign s0_valid_in = {k0_leaf_idx_out, k0_dist_valid};
-	assign s0_data_in_0 = {k0_leaf_idx_out, k0_p0_l2_dist};
-	assign s0_data_in_1 = {k0_leaf_idx_out, k0_p1_l2_dist};
-	assign s0_data_in_2 = {k0_leaf_idx_out, k0_p2_l2_dist};
-	assign s0_data_in_3 = {k0_leaf_idx_out, k0_p3_l2_dist};
-	assign s0_data_in_4 = {k0_leaf_idx_out, k0_p4_l2_dist};
-	assign s0_data_in_5 = {k0_leaf_idx_out, k0_p5_l2_dist};
-	assign s0_data_in_6 = {k0_leaf_idx_out, k0_p6_l2_dist};
-	assign s0_data_in_7 = {k0_leaf_idx_out, k0_p7_l2_dist};
-	assign s0_idx_in_0 = {k0_leaf_idx_out, k0_p0_idx_out};
-	assign s0_idx_in_1 = {k0_leaf_idx_out, k0_p1_idx_out};
-	assign s0_idx_in_2 = {k0_leaf_idx_out, k0_p2_idx_out};
-	assign s0_idx_in_3 = {k0_leaf_idx_out, k0_p3_idx_out};
-	assign s0_idx_in_4 = {k0_leaf_idx_out, k0_p4_idx_out};
-	assign s0_idx_in_5 = {k0_leaf_idx_out, k0_p5_idx_out};
-	assign s0_idx_in_6 = {k0_leaf_idx_out, k0_p6_idx_out};
-	assign s0_idx_in_7 = {k0_leaf_idx_out, k0_p7_idx_out};
+	assign s0_valid_in = k0_dist_valid;
+	assign s0_data_in_0 = k0_p0_l2_dist;
+	assign s0_data_in_1 = k0_p1_l2_dist;
+	assign s0_data_in_2 = k0_p2_l2_dist;
+	assign s0_data_in_3 = k0_p3_l2_dist;
+	assign s0_data_in_4 = k0_p4_l2_dist;
+	assign s0_data_in_5 = k0_p5_l2_dist;
+	assign s0_data_in_6 = k0_p6_l2_dist;
+	assign s0_data_in_7 = k0_p7_l2_dist;
+	assign s0_idx_in_0 = k0_p0_idx_out;
+	assign s0_idx_in_1 = k0_p1_idx_out;
+	assign s0_idx_in_2 = k0_p2_idx_out;
+	assign s0_idx_in_3 = k0_p3_idx_out;
+	assign s0_idx_in_4 = k0_p4_idx_out;
+	assign s0_idx_in_5 = k0_p5_idx_out;
+	assign s0_idx_in_6 = k0_p6_idx_out;
+	assign s0_idx_in_7 = k0_p7_idx_out;
+	assign s0_leaf_idx_in = k0_leaf_idx_out;
 	SortedList sl0(
 		.clk(clk),
 		.rst_n(rst_n),
@@ -4363,7 +4618,7 @@ module top (
 	assign sl0_insert = s0_valid_out;
 	assign sl0_last_in = s0_query_last_out;
 	assign sl0_l2_dist_in = s0_data_out_0;
-	assign sl0_merged_idx_in = s0_idx_out_0;
+	assign sl0_merged_idx_in = {s0_leaf_idx_out, s0_idx_out_0};
 	L2Kernel l2_k1_inst(
 		.clk(clk),
 		.rst_n(rst_n),
@@ -4374,7 +4629,7 @@ module top (
 		.query_valid(k1_query_valid),
 		.query_patch(k1_query_patch),
 		.dist_valid(k1_dist_valid),
-		.leaf_idx_in(k1_leaf_idx_in),
+		.leaf_idx_in((k1_exactfstrow ? k0_leaf_idx_in : k1_leaf_idx_in)),
 		.leaf_idx_out(k1_leaf_idx_out),
 		.p0_data(k1_p0_data),
 		.p1_data(k1_p1_data),
@@ -4428,9 +4683,7 @@ module top (
 	always @(posedge clk or negedge rst_n)
 		if (~rst_n)
 			k1_leaf_idx_in <= 1'sb0;
-		else if ((k1_exactfstrow & ~leaf_mem_csb0) & leaf_mem_web0)
-			k1_leaf_idx_in <= leaf_mem_addr0;
-		else if (~k1_exactfstrow & ~leaf_mem_csb1)
+		else if (~leaf_mem_csb1)
 			k1_leaf_idx_in <= leaf_mem_addr1;
 	BitonicSorter sorter1_inst(
 		.clk(clk),
@@ -4457,6 +4710,8 @@ module top (
 		.idx_in_5(s1_idx_in_5),
 		.idx_in_6(s1_idx_in_6),
 		.idx_in_7(s1_idx_in_7),
+		.leaf_idx_in(s1_leaf_idx_in),
+		.leaf_idx_out(s1_leaf_idx_out),
 		.data_out_0(s1_data_out_0),
 		.data_out_1(s1_data_out_1),
 		.data_out_2(s1_data_out_2),
@@ -4468,23 +4723,24 @@ module top (
 	);
 	assign s1_query_first_in = k1_query_first_out;
 	assign s1_query_last_in = k1_query_last_out;
-	assign s1_valid_in = {k1_leaf_idx_out, k1_dist_valid};
-	assign s1_data_in_0 = {k1_leaf_idx_out, k1_p0_l2_dist};
-	assign s1_data_in_1 = {k1_leaf_idx_out, k1_p1_l2_dist};
-	assign s1_data_in_2 = {k1_leaf_idx_out, k1_p2_l2_dist};
-	assign s1_data_in_3 = {k1_leaf_idx_out, k1_p3_l2_dist};
-	assign s1_data_in_4 = {k1_leaf_idx_out, k1_p4_l2_dist};
-	assign s1_data_in_5 = {k1_leaf_idx_out, k1_p5_l2_dist};
-	assign s1_data_in_6 = {k1_leaf_idx_out, k1_p6_l2_dist};
-	assign s1_data_in_7 = {k1_leaf_idx_out, k1_p7_l2_dist};
-	assign s1_idx_in_0 = {k1_leaf_idx_out, k1_p0_idx_out};
-	assign s1_idx_in_1 = {k1_leaf_idx_out, k1_p1_idx_out};
-	assign s1_idx_in_2 = {k1_leaf_idx_out, k1_p2_idx_out};
-	assign s1_idx_in_3 = {k1_leaf_idx_out, k1_p3_idx_out};
-	assign s1_idx_in_4 = {k1_leaf_idx_out, k1_p4_idx_out};
-	assign s1_idx_in_5 = {k1_leaf_idx_out, k1_p5_idx_out};
-	assign s1_idx_in_6 = {k1_leaf_idx_out, k1_p6_idx_out};
-	assign s1_idx_in_7 = {k1_leaf_idx_out, k1_p7_idx_out};
+	assign s1_valid_in = k1_dist_valid;
+	assign s1_data_in_0 = k1_p0_l2_dist;
+	assign s1_data_in_1 = k1_p1_l2_dist;
+	assign s1_data_in_2 = k1_p2_l2_dist;
+	assign s1_data_in_3 = k1_p3_l2_dist;
+	assign s1_data_in_4 = k1_p4_l2_dist;
+	assign s1_data_in_5 = k1_p5_l2_dist;
+	assign s1_data_in_6 = k1_p6_l2_dist;
+	assign s1_data_in_7 = k1_p7_l2_dist;
+	assign s1_idx_in_0 = k1_p0_idx_out;
+	assign s1_idx_in_1 = k1_p1_idx_out;
+	assign s1_idx_in_2 = k1_p2_idx_out;
+	assign s1_idx_in_3 = k1_p3_idx_out;
+	assign s1_idx_in_4 = k1_p4_idx_out;
+	assign s1_idx_in_5 = k1_p5_idx_out;
+	assign s1_idx_in_6 = k1_p6_idx_out;
+	assign s1_idx_in_7 = k1_p7_idx_out;
+	assign s1_leaf_idx_in = k1_leaf_idx_out;
 	SortedList sl1(
 		.clk(clk),
 		.rst_n(rst_n),
@@ -4507,7 +4763,7 @@ module top (
 	assign sl1_insert = s1_valid_out;
 	assign sl1_last_in = s1_query_last_out;
 	assign sl1_l2_dist_in = s1_data_out_0;
-	assign sl1_merged_idx_in = s1_idx_out_0;
+	assign sl1_merged_idx_in = {s1_leaf_idx_out, s1_idx_out_0};
 endmodule
 module wbsCtrl (
 	wb_clk_i,

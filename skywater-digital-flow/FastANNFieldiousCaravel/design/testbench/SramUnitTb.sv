@@ -83,12 +83,12 @@ module top_wrapper_tb();
     supply0 vssd1;
     supply1 vccd1;
 
-    assign io_in[0] = in_fifo_wenq;
-    assign io_in[11:1] = in_fifo_wdata;
-    assign in_fifo_wfull_n = io_out[12];
+    assign io_in[0] = io_clk;
+    assign io_in[1] = io_rst_n;
 
-    assign io_in[13] = io_clk;
-    assign io_in[14] = io_rst_n;
+    assign io_in[2] = in_fifo_wenq;
+    assign io_in[13:3] = in_fifo_wdata;
+    assign in_fifo_wfull_n = io_out[14];
 
     assign io_in[15] = fsm_start;
     assign io_in[16] = send_best_arr;
@@ -145,7 +145,7 @@ module top_wrapper_tb();
     initial begin 
         user_clock2 = 0;
         forever begin
-            #10 user_clock2 = ~user_clock2;
+            #3.5 user_clock2 = ~user_clock2;
         end 
     end
 
@@ -159,7 +159,7 @@ module top_wrapper_tb();
     initial begin 
         io_clk = 0; //Our clock is IO pin1
         forever begin
-            #10 io_clk = ~io_clk;
+            #3.5 io_clk = ~io_clk;
         end 
     end
 
@@ -220,13 +220,13 @@ module top_wrapper_tb();
 		
 		
             received_idx_data_file = $fopen("received_idx.txt", "a");
-	    received_dist_data_file = $fopen("received_dist.txt", "a");
+	        received_dist_data_file = $fopen("received_dist.txt", "a");
         
             $display("Starting new image");
 
             wb_rst_i = 0;
-            wbs_cyc_i = 0;
             wbs_stb_i = 0;
+            wbs_cyc_i = 0;
             fsm_start = 0;
             send_best_arr = 0;
             load_kdtree = 0;
@@ -234,6 +234,7 @@ module top_wrapper_tb();
             in_fifo_wenq = 0;
             in_fifo_wdata = '0;
             out_fifo_deq = '0;
+            la_data_in = '0;
             
             #100
             wb_rst_i = 1;
@@ -293,7 +294,7 @@ module top_wrapper_tb();
             $display("[T=%0t] Finished sending queries", $realtime);
             querytime = $realtime - simtime;
             
-
+            wait(load_done);
             #100;
             @(negedge io_clk) fsm_start = 1'b1;
             $display("[T=%0t] Start algorithm (ExactFstRow, SearchLeaf and ProcessRows)", $realtime);
@@ -312,8 +313,8 @@ module top_wrapper_tb();
             // #1000; // test for continuous and uncontinuous rempty_n
 
             for(int px=0; px<2; px=px+1) begin
-                //for(x=0; x<4; x=x+1) begin
-                  for(x=0; x<(ROW_SIZE/2/BLOCKING); x=x+1) begin  // for row_size = 26
+                //for(x=0; x<4; x=x+1) begin  // for row_size = 26
+                for(x=0; x<(ROW_SIZE/2/BLOCKING); x=x+1) begin
                     for(y=0; y<COL_SIZE; y=y+1) begin
                         for(xi=0; xi<BLOCKING; xi=xi+1) begin
                             //if ((x != 3) || (xi < 1)) begin  // for row_size = 26
@@ -324,6 +325,9 @@ module top_wrapper_tb();
                                         addr = px*ROW_SIZE/2 + y*ROW_SIZE + x*BLOCKING + xi;
                                         received_idx[addr] = out_fifo_rdata;
                                         // $display("addr %d, rdata %d", addr, out_fifo_rdata);
+                                        @(negedge io_clk)
+                                        out_fifo_deq = 1'b0;
+                                        @(negedge io_clk);
                                         break;
                                     end else out_fifo_deq = 1'b0;
                                 end
@@ -338,22 +342,25 @@ module top_wrapper_tb();
 
             // need this else the fsm state and output fifo is messed up
             for(int px=0; px<2; px=px+1) begin
-                //for(x=0; x<4; x=x+1) begin
-                 for(x=0; x<(ROW_SIZE/2/BLOCKING); x=x+1) begin  // for row_size = 24
+                //for(x=0; x<4; x=x+1) begin  // for row_size = 26
+                for(x=0; x<(ROW_SIZE/2/BLOCKING); x=x+1) begin
                     for(y=0; y<COL_SIZE; y=y+1) begin
                         for(xi=0; xi<BLOCKING; xi=xi+1) begin
                             for(int agg=0; agg<=1; agg=agg+1) begin  // most significant first
-                               // if ((x != 3) || (xi < 1)) begin  // for row_size = 26
+                                // if ((x != 3) || (xi < 1)) begin  // for row_size = 26
                                     while(1) begin 
                                         @(negedge io_clk)
                                         if (out_fifo_rempty_n) begin
                                             out_fifo_deq = 1'b1;
                                             addr = px*ROW_SIZE/2 + y*ROW_SIZE + x*BLOCKING + xi;
                                             received_dist[addr][agg*DATA_WIDTH+:DATA_WIDTH] = out_fifo_rdata;
+                                            @(negedge io_clk)
+                                            out_fifo_deq = 1'b0;
+                                            @(negedge io_clk);
                                             break;
                                         end else out_fifo_deq = 1'b0;
                                     end
-                                //end
+                                // end
                             end
                         end
                     end
@@ -363,7 +370,6 @@ module top_wrapper_tb();
             @(negedge io_clk) out_fifo_deq = 1'b0;
             $display("[T=%0t] Finished receiving outputs", $realtime);
             outputtime = $realtime - simtime;
-
             
             for(int i=0; i<NUM_QUERYS; i=i+1) begin
                 $fwrite(received_idx_data_file, "%d\n", received_idx[i]);
@@ -876,7 +882,7 @@ module top_wrapper_tb();
     initial begin
         $dumpfile("dump.vcd");
         $dumpvars;
-	#1667800;
+	      #1678000;
         $finish(2);
     end
 
