@@ -54,15 +54,15 @@ set_driving_cell -no_design_rule \
 
 # set_input_delay constraints for input ports
 # Make this non-zero to avoid hold buffers on input-registered designs
-set_input_delay -clock ${wbclock_name} [100 * 0.5] [get_ports -regexp {(?=.*wb.*i.*)(?!.*clk)^.*$} ]
+set_input_delay -clock ${wbclock_name} [expr 100 * 0.5] [get_ports -regexp {(?=.*wb.*i.*)(?!.*clk)^.*$} ]
 set_input_delay -clock ${ioclock_name} [expr ${clock_period} * 0.5] [get_ports -regexp {(?=.*io.*i.*)(?!.*\\\[0)^.*$} ]
-set_input_delay -clock ${wbclock_name} [100 * 0.5] [get_ports -regexp {.*la.*in.*|.*la.*oen.*} ]
+set_input_delay -clock ${wbclock_name} [expr 100 * 0.5] [get_ports -regexp {.*la.*in.*|.*la.*oen.*} ]
 #set_clock_latency -source [expr ${clock_period} * 0.5] [get_clocks *]
 
 
 # set_output_delay constraints for output ports
-set_output_delay -clock ${wbclock_name} [100 * 0.5] [all_outputs]
-set_output_delay -clock ${wbclock_name} [100 * 0.5] [get_ports "wb*_o"]
+set_output_delay -clock ${wbclock_name} [expr 100 * 0.5] [all_outputs]
+set_output_delay -clock ${wbclock_name} [expr 100 * 0.5] [get_ports "wb*_o"]
 set_output_delay -clock ${ioclock_name} [expr ${clock_period} * 0.5] [get_ports "io_o*"]
 
 

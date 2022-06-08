@@ -2664,7 +2664,7 @@ module MainFSM (
 			end
 			32'd15: begin
 				counter_en = 1'b1;
-				counter_in = 11;
+				counter_in = 12;
 				if (counter_done) begin
 					nextState = 32'd0;
 					fsm_done = 1'b1;

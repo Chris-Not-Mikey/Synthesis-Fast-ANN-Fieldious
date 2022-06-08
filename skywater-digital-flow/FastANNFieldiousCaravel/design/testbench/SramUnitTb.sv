@@ -187,32 +187,32 @@ module top_wrapper_tb();
         $timeformat(-9, 2, "ns", 20);
 	    
 	    expected_idx_data_file = $fopen("inputs/expectedIndex.txt", "r");
-            // expected_idx_data_file = $fopen("data/IO_data/topToBottomLeafIndex.txt", "r");
-            if (expected_idx_data_file == 0) begin
-                $display("expected_idx_data_file handle was NULL");
-                $finish;
-            end
-         
-            
-            int_nodes_data_file = $fopen("inputs/internalNodes.txt", "r");
-            if (int_nodes_data_file == 0) begin
-                $display("int_nodes_data_file handle was NULL");
-                $finish;
-            end
-            
-            leaves_data_file = $fopen("inputs/leafNodes.txt", "r");
-            if (leaves_data_file == 0) begin
-                $display("leaves_data_file handle was NULL");
-                $finish;
-            end
-            
-            query_data_file = $fopen("inputs/patches.txt", "r");
-            if (query_data_file == 0) begin
-                $display("query_data_file handle was NULL");
-                $finish;
-            end
+        // expected_idx_data_file = $fopen("data/IO_data/topToBottomLeafIndex.txt", "r");
+        if (expected_idx_data_file == 0) begin
+            $display("expected_idx_data_file handle was NULL");
+            $finish;
+        end
+        
+        
+        int_nodes_data_file = $fopen("inputs/internalNodes.txt", "r");
+        if (int_nodes_data_file == 0) begin
+            $display("int_nodes_data_file handle was NULL");
+            $finish;
+        end
+        
+        leaves_data_file = $fopen("inputs/leafNodes.txt", "r");
+        if (leaves_data_file == 0) begin
+            $display("leaves_data_file handle was NULL");
+            $finish;
+        end
+        
+        query_data_file = $fopen("inputs/patches.txt", "r");
+        if (query_data_file == 0) begin
+            $display("query_data_file handle was NULL");
+            $finish;
+        end
 
-	for (int q=0; q<4; q=q+1) begin
+	    for (int q=0; q<4; q=q+1) begin
             
             for(int i=0; i<NUM_QUERYS; i=i+1) begin
                 scan_file = $fscanf(expected_idx_data_file, "%d\n", expected_idx[i]);
@@ -375,18 +375,18 @@ module top_wrapper_tb();
                 $fwrite(received_idx_data_file, "%d\n", received_idx[i]);
                 if (expected_idx[i] != received_idx[i])
                     $display("mismatch %d: expected: %d, received %d", i, expected_idx[i], received_idx[i]);
-                else
-                    $display("match %d: expected: %d, received %d", i, expected_idx[i], received_idx[i]);
+                // else
+                //     $display("match %d: expected: %d, received %d", i, expected_idx[i], received_idx[i]);
             end
                 
             //We do NOT compare with expected.
-	    //We actually do a slightly different dist calculation, so the results are all slightly off.
+	        //We actually do a slightly different dist calculation, so the results are all slightly off.
             //This doesn't matter downstream since the relative distance to other points is what matters
             for(int i=0; i<NUM_QUERYS; i=i+1) begin
                 $fwrite(received_dist_data_file, "%d\n", received_dist[i]);
 //                 if (expected_idx[i] != received_dist[i])
 //                     $display("mismatch %d: expected: %d, received %d", i, expected_idx[i], received_dist[i]);
-// //                 else
+//                 else
 //                     $display("match %d: expected: %d, received %d", i, expected_idx[i], received_dist[i]);
             end
 
