@@ -171,7 +171,7 @@ module top_wrapper_tb();
     integer leaves_data_file;
     integer query_data_file;
     reg [DATA_WIDTH-1:0] received_idx [NUM_QUERYS-1:0];
-    reg [DATA_WIDTH-1:0] received_dist [NUM_QUERYS-1:0];
+    reg [(DATA_WIDTH*2)-1:0] received_dist [NUM_QUERYS-1:0]; //See note below
     reg [DATA_WIDTH-1:0] expected_idx [NUM_QUERYS-1:0];
     integer x;
     integer xi;
@@ -373,7 +373,9 @@ module top_wrapper_tb();
                     $display("match %d: expected: %d, received %d", i, expected_idx[i], received_idx[i]);
             end
                 
-            
+            //We do NOT compare with expected.
+	    //We actually do a slightly different dist calculation, so the results are all slightly off.
+            //This doesn't matter downstream since the relative distance to other points is what matters
             for(int i=0; i<NUM_QUERYS; i=i+1) begin
                 $fwrite(received_dist_data_file, "%d\n", received_dist[i]);
 //                 if (expected_idx[i] != received_dist[i])
