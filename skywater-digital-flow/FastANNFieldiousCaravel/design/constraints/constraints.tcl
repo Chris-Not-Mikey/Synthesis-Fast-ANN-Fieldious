@@ -24,20 +24,18 @@ set userclockmux_name ideal_mux_user_clock
 set clockmux_name   ideal_mux_clock
 
 
-set usr_mux_clk1 ideal_mux_user_clock1
-set usr_mux_clk2 ideal_mux_user_clock2
-set mux_clk1   ideal_mux_clock1
-set mux_clk2   ideal_mux_clock2
-set clockmux_name_3   ideal_mux_clock3
-set clockmux_name_4   ideal_mux_clock4
-
-
-create_clock -name ${wbclock_name}  -period ${clock_period} [get_ports "wb_clk_i"] 
+create_clock -name ${wbclock_name}  -period 100 [get_ports "wb_clk_i"] 
 create_clock -name ${ioclock_name}  -period ${clock_period} [get_ports "io_in[0]"] 
 create_clock -name ${userclock2_name}   -period ${clock_period} [get_ports "user_clock2"] 
 
 #MUXES
 set_clock_groups -logically_exclusive -group [get_clocks "ideal_clock_io"]  -group [get_clocks "ideal_user_clock2"] -group [get_clocks "ideal_clock"]
+
+# try
+# set_clock_groups -asynchronous \
+#                  -group [get_clocks ${wbclock_name}] \
+#                  -group [get_clocks ${userclock2_name}] \
+#                  -group [get_clocks ${ioclock_name}]
 
 
 # This constraint sets the load capacitance in picofarads of the
@@ -56,16 +54,17 @@ set_driving_cell -no_design_rule \
 
 # set_input_delay constraints for input ports
 # Make this non-zero to avoid hold buffers on input-registered designs
-set_input_delay -clock ${wbclock_name} [expr ${clock_period} * 0.5] [get_ports -regexp {(?=.*wb.*i.*)(?!.*clk)^.*$} ]
+set_input_delay -clock ${wbclock_name} [100 * 0.5] [get_ports -regexp {(?=.*wb.*i.*)(?!.*clk)^.*$} ]
 set_input_delay -clock ${ioclock_name} [expr ${clock_period} * 0.5] [get_ports -regexp {(?=.*io.*i.*)(?!.*\\\[0)^.*$} ]
-set_input_delay -clock ${wbclock_name} [expr ${clock_period} * 0.5] [get_ports -regexp {.*la.*in.*|.*la.*oen.*} ]
+set_input_delay -clock ${wbclock_name} [100 * 0.5] [get_ports -regexp {.*la.*in.*|.*la.*oen.*} ]
 #set_clock_latency -source [expr ${clock_period} * 0.5] [get_clocks *]
 
 
 # set_output_delay constraints for output ports
-set_output_delay -clock ${userclock2_name} [expr ${clock_period} * 0.5] [all_outputs]
-set_output_delay -clock ${wbclock_name} [expr ${clock_period} * 0.5] [get_ports "wb*_o"]
+set_output_delay -clock ${wbclock_name} [100 * 0.5] [all_outputs]
+set_output_delay -clock ${wbclock_name} [100 * 0.5] [get_ports "wb*_o"]
 set_output_delay -clock ${ioclock_name} [expr ${clock_period} * 0.5] [get_ports "io_o*"]
+
 
 # Make all signals limit their fanout
 

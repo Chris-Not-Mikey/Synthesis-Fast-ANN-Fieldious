@@ -1,4 +1,5 @@
 cif istyle sky130(vendor)
+set ::env(MAGIC_EXT_USE_GDS) 1
 foreach f [glob -directory inputs *.lef] {
     lef read $f
 }

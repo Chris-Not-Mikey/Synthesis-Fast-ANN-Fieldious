@@ -2237,8 +2237,8 @@ module MainFSM (
 	parameter DATA_WIDTH = 11;
 	parameter LEAF_SIZE = 8;
 	parameter PATCH_SIZE = 5;
-	parameter ROW_SIZE = 26;
-	parameter COL_SIZE = 19;
+	parameter ROW_SIZE = 32;
+	parameter COL_SIZE = 16;
 	parameter NUM_QUERYS = ROW_SIZE * COL_SIZE;
 	parameter K = 4;
 	parameter NUM_LEAVES = 64;
@@ -3848,8 +3848,8 @@ module top (
 	parameter IDX_WIDTH = 9;
 	parameter LEAF_SIZE = 8;
 	parameter PATCH_SIZE = 5;
-	parameter ROW_SIZE = 26;
-	parameter COL_SIZE = 19;
+	parameter ROW_SIZE = 32;
+	parameter COL_SIZE = 16;
 	parameter NUM_QUERYS = ROW_SIZE * COL_SIZE;
 	parameter K = 4;
 	parameter BEST_ARRAY_K = 1;
@@ -4808,8 +4808,8 @@ module wbsCtrl (
 	parameter IDX_WIDTH = 9;
 	parameter LEAF_SIZE = 8;
 	parameter PATCH_SIZE = 5;
-	parameter ROW_SIZE = 26;
-	parameter COL_SIZE = 19;
+	parameter ROW_SIZE = 32;
+	parameter COL_SIZE = 16;
 	parameter NUM_QUERYS = ROW_SIZE * COL_SIZE;
 	parameter K = 4;
 	parameter NUM_LEAVES = 64;
