@@ -187,7 +187,6 @@ module top_wrapper_tb();
         $timeformat(-9, 2, "ns", 20);
 	    
 	    expected_idx_data_file = $fopen("inputs/expectedIndex.txt", "r");
-        // expected_idx_data_file = $fopen("data/IO_data/topToBottomLeafIndex.txt", "r");
         if (expected_idx_data_file == 0) begin
             $display("expected_idx_data_file handle was NULL");
             $finish;
