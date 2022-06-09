@@ -1,0 +1,12 @@
+name: sky130-closed-adk
+
+outputs:
+  - adk
+
+commands:
+  - echo "{sky130_closed_path}"
+  - cp "{sky130_closed_path}"/PV/Calibre/LVS/calibre_lvs.rul outputs/adk/calibre-lvs.rule
+  - cp "{sky130_closed_path}"/PV/Calibre/DRC/calibre_drc.rul outputs/adk/calibre-drc-block.rule
+
+parameters:
+  sky130_closed_path: "/skywater/V2.1.302"
