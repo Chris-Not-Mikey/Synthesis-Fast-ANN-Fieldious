@@ -25,11 +25,12 @@ def construct():
 
   parameters = {
     'construct_path' : __file__,
-    'design_name'    : 'user_project_wrapper',
+    'design_name'    : 'GcdUnit',
     'clock_period'   : 10.0,
     'adk'            : adk_name,
     'adk_view'       : adk_view,
-    'topographical'  : True
+    'topographical'  : True,
+    'lvs_extra_spice_include' : 'inputs/adk/*.spi'
   }
 
   #-----------------------------------------------------------------------
@@ -52,12 +53,13 @@ def construct():
   netgen_lvs_gds  = Step( this_dir + '/netgen-lvs-gds'                  )
   netgen_lvs_gds_device = Step( this_dir + '/netgen-lvs-gds-device'     )
   magic_antenna   = Step( this_dir + '/open-magic-antenna'              )
-  calibre_lvs     = Step( this_dir + '/mentor-calibre-comparison'       )
+  calibre_lvs_on_magic_extraction = Step( this_dir + '/mentor-calibre-comparison')
   calibre_drc     = Step( this_dir + '/mentor-calibre-drc'              )
 
   # Default steps
 
   info            = Step( 'info',                          default=True )
+  calibre_lvs     = Step( this_dir + '/mentor-calibre-lvs'              )
   
   #-----------------------------------------------------------------------
   # Graph -- Add nodes
@@ -69,9 +71,10 @@ def construct():
   g.add_step( magic_antenna   )
   g.add_step( magic_gds2spice )
   g.add_step( netgen_lvs_gds  )
-  g.add_step( netgen_lvs_gds_device  )
-  g.add_step( calibre_lvs     )
+  g.add_step( netgen_lvs_gds_device )
+  g.add_step( calibre_lvs_on_magic_extraction )
   g.add_step( calibre_drc     )
+  g.add_step( calibre_lvs     )
   g.add_step( adk_closed      )
 
   #-----------------------------------------------------------------------
@@ -84,13 +87,15 @@ def construct():
   magic_gds2spice.extend_inputs(['sky130_sram_2kbyte_1rw1r_32x512_8.lef'])  
 
   # Connect by name
+  g.connect_by_name( adk,             adk_closed      )
   g.connect_by_name( adk,             magic_drc       )
   g.connect_by_name( adk,             magic_antenna   )
   g.connect_by_name( adk,             magic_gds2spice )
   g.connect_by_name( adk,             netgen_lvs_gds  )
   g.connect_by_name( adk,             netgen_lvs_gds_device  )
-  g.connect_by_name( adk,             calibre_lvs     )
+  g.connect_by_name( adk,             calibre_lvs_on_magic_extraction     )
   g.connect_by_name( adk_closed,      calibre_drc     )
+  g.connect_by_name( adk_closed,      calibre_lvs     )
 
   # DRC and antenna checks using magic
   g.connect_by_name( user_project_wrapper,         magic_drc       )
@@ -106,9 +111,12 @@ def construct():
   g.connect_by_name( magic_gds2spice, netgen_lvs_gds  )
   g.connect_by_name( magic_gds2spice, netgen_lvs_gds_device  )
 
-  # LVS on GDS using calibre
+  # LVS on GDS using calibre but with magic extraction
+  g.connect_by_name( user_project_wrapper, calibre_lvs_on_magic_extraction )
+  g.connect_by_name( magic_gds2spice, calibre_lvs_on_magic_extraction )
+
+  # LVS on GDS using only calibre
   g.connect_by_name( user_project_wrapper,         calibre_lvs     )
-  g.connect_by_name( magic_gds2spice, calibre_lvs     )
  
   #-----------------------------------------------------------------------
   # Parameterize

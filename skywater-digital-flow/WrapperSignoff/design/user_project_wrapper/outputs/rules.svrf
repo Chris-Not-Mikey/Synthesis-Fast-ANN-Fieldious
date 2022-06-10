@@ -1,0 +1,10 @@
+// Case sensitive
+LAYOUT CASE YES
+SOURCE CASE YES
+
+// Black box all std cells if Magic is also black boxing
+LVS BOX "sky130_*"
+
+// Filering out fills and taps in source
+//LVS FILTER "sky130_fd_sc_*__fill_*" SOURCE OPEN
+//LVS FILTER "sky130_fd_sc_*__tapvpwrvgnd_*" SOURCE OPEN
