@@ -27,5 +27,5 @@
 *cmnTranscriptEchoToFile: 1
 *cmnRunMT: 1
 *cmnRunHyper: 1
-*cmnV2LVS_SPICEIncFiles: ${lvs_extra_spice_include} inputs/stdcells.spi
+*cmnV2LVS_SPICEIncFiles: stdcells.spi
 *cmnV2LVS_UseRangeMode: 1
