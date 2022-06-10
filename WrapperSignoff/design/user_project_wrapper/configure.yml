@@ -10,7 +10,10 @@ outputs:
 commands:
   - echo "{caravel_path}"
   - cat "{caravel_path}"/verilog/gl/user_project_wrapper.v "{caravel_path}"/verilog/gl/user_proj_example.v > outputs/design.lvs.v
-  - cp "{caravel_path}"/gds/user_project_wrapper.gds outputs/design_merged.gds
+  - cp "{caravel_path}"/gds/user_project_wrapper.gds ./design.gds
+  - strmin -library strim_test -strmFile design.gds -logFile strmIn.log -topCell ${design_name} -view layout -case Preserve -layerMap /skywater/V2.1.302/LIBS/S130/S8_to_S130.layermap -propSeparator , -attachTechFileOfLib S130
+  - strmout -library strim_test -strmFile design_merged.gds -logFile strmOut.log -topCell ${design_name} -view layout -case Preserve -layerMap /skywater/V2.1.302/LIBS/S130/S130.layermap -techLib S130 -convertDot node -convertPcellPin geometry
+  - cp design_merged.gds ./outputs/design_merged.gds
   - cp "{sram_path}"/sky130_sram_2kbyte_1rw1r_32x512_8/sky130_sram_2kbyte_1rw1r_32x512_8.lef sky130_sram_2kbyte_1rw1r_32x512_8.lef
   - cp "{sram_path}"/sky130_sram_1kbyte_1rw1r_32x256_8/sky130_sram_1kbyte_1rw1r_32x256_8.lef sky130_sram_1kbyte_1rw1r_32x256_8.lef
 
