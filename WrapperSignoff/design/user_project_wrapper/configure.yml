@@ -5,6 +5,7 @@ outputs:
   - design_merged.gds
   - sky130_sram_1kbyte_1rw1r_32x256_8.lef
   - sky130_sram_2kbyte_1rw1r_32x512_8.lef
+  - rules.svrf
 
 commands:
   - echo "{caravel_path}"
