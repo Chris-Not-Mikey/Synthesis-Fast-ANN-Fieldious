@@ -332,7 +332,7 @@ def construct():
   # Timing signoff
   g.connect( signoff.o('design.spef.gz'),   pt_timing.i('design.spef.gz' ) )
   g.connect( signoff.o('design.vcs.v'  ),   pt_timing.i('design.vcs.v'   ) )
-  g.connect( signoff.o('design.sdc'    ),   pt_timing.i('design.pt.sdc'  ) )
+  g.connect( signoff.o('design_format.sdc'    ),   pt_timing.i('design.pt.sdc'  ) ) 
 
   # Gate level simulation
   g.connect( signoff.o(   'design.vcs.pg.v'  ), gl_sim.i(      'design.vcs.v'     ) )
