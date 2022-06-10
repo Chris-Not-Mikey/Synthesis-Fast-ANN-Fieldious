@@ -31,6 +31,7 @@ outputs:
   - design.virtuoso.v
   - design.spef.gz
   - design.rcbest.spef.gz
+  - design_format.sdc
 
 #-------------------------------------------------------------------------
 # Commands
@@ -56,6 +57,7 @@ commands:
   - ln -sf ../results/*.sdc               design.sdc
   - ln -sf ../results/*.sdf               design.sdf
   - ln -sf ../results/*.virtuoso.v        design.virtuoso.v
+  - python3 ../scripts/fix_file.py
 
 #-------------------------------------------------------------------------
 # Parameters
