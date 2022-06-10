@@ -29,13 +29,16 @@ create_clock -name ${ioclock_name}  -period ${clock_period} [get_ports "io_in[0]
 create_clock -name ${userclock2_name}   -period ${clock_period} [get_ports "user_clock2"] 
 
 #MUXES
-set_clock_groups -logically_exclusive -group [get_clocks "ideal_clock_io"]  -group [get_clocks "ideal_user_clock2"] -group [get_clocks "ideal_clock"]
+#set_clock_groups -logically_exclusive -group [get_clocks "ideal_clock_io"]  -group [get_clocks "ideal_user_clock2"] -group [get_clocks "ideal_clock"]
 
 # try
-# set_clock_groups -asynchronous \
-#                  -group [get_clocks ${wbclock_name}] \
-#                  -group [get_clocks ${userclock2_name}] \
-#                  -group [get_clocks ${ioclock_name}]
+set_clock_groups -asynchronous \
+                 -group [get_clocks "ideal_clock_io"] \
+                 -group [get_clocks "ideal_user_clock2"] \
+                 -group [get_clocks "ideal_clock"]
+                 
+set_false_path -from [get_ports *in*] -to [get_ports *out*]
+set_false_path -from [get_ports *in*] -to [get_ports *oeb*]
 
 
 # This constraint sets the load capacitance in picofarads of the
