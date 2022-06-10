@@ -74,6 +74,7 @@ def construct():
 
 
   magic_drc       = Step( this_dir + '/open-magic-drc'                  )
+  klayout_drc     = Step( this_dir + '/klayout-drc-gds'                 )
   magic_def2spice = Step( this_dir + '/open-magic-def2spice'            )
   magic_gds2spice = Step( this_dir + '/open-magic-gds2spice'            )
   netgen_lvs_gds  = Step( this_dir + '/netgen-lvs-gds'                  )
@@ -150,6 +151,7 @@ def construct():
   g.add_step( gen_saif_gl     )
   g.add_step( pt_power_gl     )
   g.add_step( magic_drc       )
+  g.add_step( klayout_drc     )
   g.add_step( magic_antenna   )
   g.add_step( magic_def2spice )
   g.add_step( netgen_lvs_def  )
@@ -230,6 +232,7 @@ def construct():
   
   # DRC, LVS, timing signoff and power signoff
   g.connect_by_name( gdsmerge,        magic_drc       )
+  g.connect_by_name( gdsmerge,        klayout_drc     )
   g.connect_by_name( gdsmerge,        magic_antenna   )
 
   # LVS using DEF

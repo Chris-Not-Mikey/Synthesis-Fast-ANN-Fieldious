@@ -1,0 +1,18 @@
+name: user_project_wrapper
+
+outputs:
+  - design.lvs.v
+  - design_merged.gds
+  - sky130_sram_1kbyte_1rw1r_32x256_8.lef
+  - sky130_sram_2kbyte_1rw1r_32x512_8.lef
+
+commands:
+  - echo "{caravel_path}"
+  - cat "{caravel_path}"/verilog/gl/user_project_wrapper.v "{caravel_path}"/verilog/gl/user_proj_example.v > outputs/design.lvs.v
+  - cp "{caravel_path}"/gds/user_project_wrapper.gds outputs/design_merged.gds
+  - cp "{sram_path}"/sky130_sram_2kbyte_1rw1r_32x512_8/sky130_sram_2kbyte_1rw1r_32x512_8.lef sky130_sram_2kbyte_1rw1r_32x512_8.lef
+  - cp "{sram_path}"/sky130_sram_1kbyte_1rw1r_32x256_8/sky130_sram_1kbyte_1rw1r_32x256_8.lef sky130_sram_1kbyte_1rw1r_32x256_8.lef
+
+parameters:
+  caravel_path: "/scratch/users/praina/ee372/gcdunit_caravel_user_project"
+  sram_path: "/farmshare/home/classes/ee/372/PDKs/sky130_sram_macros"

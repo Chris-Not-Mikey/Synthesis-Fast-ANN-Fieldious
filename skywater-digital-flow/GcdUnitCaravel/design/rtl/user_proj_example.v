@@ -66,10 +66,6 @@ module user_proj_example #(
   
   GcdUnit GcdUnit_inst
   (
-    `ifdef USE_POWER_PINS
-	   .VDD(VDD),	// User area 1 1.8V power
-	   .VSS(VSS),	// User area 1 digital ground
-     `endif
     .clk(wb_clk_i),
     .req_msg(wbs_dat_i),
     .req_rdy(gcd_req_rdy),
