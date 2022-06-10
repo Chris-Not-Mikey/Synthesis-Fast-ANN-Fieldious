@@ -25,7 +25,7 @@ def construct():
 
   parameters = {
     'construct_path' : __file__,
-    'design_name'    : 'user_project_wrapper',
+    'design_name'    : 'GcdUnit',
     'clock_period'   : 10.0,
     'adk'            : adk_name,
     'adk_view'       : adk_view,
@@ -59,7 +59,7 @@ def construct():
   # Default steps
 
   info            = Step( 'info',                          default=True )
-  calibre_lvs     = Step( 'mentor-calibre-lvs',            default=True )
+  calibre_lvs     = Step( this_dir + '/mentor-calibre-lvs'              )
   
   #-----------------------------------------------------------------------
   # Graph -- Add nodes
