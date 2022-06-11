@@ -25,7 +25,7 @@ def construct():
 
   parameters = {
     'construct_path' : __file__,
-    'design_name'    : 'GcdUnit',
+    'design_name'    : 'user_project_wrapper',
     'clock_period'   : 10.0,
     'adk'            : adk_name,
     'adk_view'       : adk_view,
@@ -55,6 +55,7 @@ def construct():
   magic_antenna   = Step( this_dir + '/open-magic-antenna'              )
   calibre_lvs_on_magic_extraction = Step( this_dir + '/mentor-calibre-comparison')
   calibre_drc     = Step( this_dir + '/mentor-calibre-drc'              )
+  convert_gds     = Step( this_dir + '/cadence-gds-convert-s8-to-s130'  )
 
   # Default steps
 
@@ -73,6 +74,7 @@ def construct():
   g.add_step( netgen_lvs_gds  )
   g.add_step( netgen_lvs_gds_device )
   g.add_step( calibre_lvs_on_magic_extraction )
+  g.add_step( convert_gds     )
   g.add_step( calibre_drc     )
   g.add_step( calibre_lvs     )
   g.add_step( adk_closed      )
@@ -97,27 +99,31 @@ def construct():
   g.connect_by_name( adk_closed,      calibre_drc     )
   g.connect_by_name( adk_closed,      calibre_lvs     )
 
+  g.connect_by_name( user_project_wrapper,         convert_gds     )
+
   # DRC and antenna checks using magic
   g.connect_by_name( user_project_wrapper,         magic_drc       )
   g.connect_by_name( user_project_wrapper,         magic_antenna   )
 
   # DRC using calibre
-  g.connect_by_name( user_project_wrapper,         calibre_drc     )
+  g.connect_by_name( convert_gds,                  calibre_drc     )
   
   # LVS on GDS using netgen
   g.connect_by_name( user_project_wrapper,         magic_gds2spice )
   g.connect_by_name( user_project_wrapper,         netgen_lvs_gds  )
   g.connect_by_name( user_project_wrapper,         netgen_lvs_gds_device  )
-  g.connect_by_name( magic_gds2spice, netgen_lvs_gds  )
-  g.connect_by_name( magic_gds2spice, netgen_lvs_gds_device  )
+  g.connect_by_name( magic_gds2spice,              netgen_lvs_gds  )
+  g.connect_by_name( magic_gds2spice,              netgen_lvs_gds_device  )
 
   # LVS on GDS using calibre but with magic extraction
-  g.connect_by_name( user_project_wrapper, calibre_lvs_on_magic_extraction )
-  g.connect_by_name( magic_gds2spice, calibre_lvs_on_magic_extraction )
+  g.connect_by_name( user_project_wrapper,         calibre_lvs_on_magic_extraction )
+  g.connect_by_name( magic_gds2spice,              calibre_lvs_on_magic_extraction )
 
   # LVS on GDS using only calibre
-  g.connect_by_name( user_project_wrapper,         calibre_lvs     )
- 
+  g.connect( user_project_wrapper.o('design.lvs.v'), calibre_lvs.i('design.lvs.v') )
+  g.connect( user_project_wrapper.o('rules.svrf'), calibre_lvs.i('rules.svrf') )
+  g.connect( convert_gds.o('design_merged.gds'), calibre_lvs.i('design_merged.gds') )
+
   #-----------------------------------------------------------------------
   # Parameterize
   #-----------------------------------------------------------------------

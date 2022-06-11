@@ -1,5 +1,4 @@
-setenv MFLOWGEN_PATH /home/users/canswang/mflowgen
-setenv MFLOWGEN_HOME /home/users/canswang/mflowgen
+setenv MFLOWGEN_PATH /farmshare/home/classes/ee/372/PDKs
 setenv SRAM_PATH     /farmshare/home/classes/ee/372/PDKs/sky130_sram_macros
 
 setenv PATH /cad/mentor/2019.11/Catapult_Synthesis_10.4b-841621/Mgc_home/bin:$PATH
