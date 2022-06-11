@@ -1,0 +1,20 @@
+name: cadence-gds-convert-s8-to-s130 
+
+inputs:
+  - design_merged.gds
+outputs:
+  - design_merged.gds
+
+commands:
+  - git clone https://github.com/CansWang/skywater-closed-pdk-flow.git
+  - cp inputs/design_merged.gds ./skywater-closed-pdk-flow/CDS/design.gds
+  - cd skywater-closed-pdk-flow/CDS/
+  - strmin -library strim -strmFile design.gds -logFile strmIn.log -topCell "{design_name}" -view layout -case Preserve -layerMap /skywater/V2.1.302/LIBS/S130/S8_to_S130.layermap -propSeparator , -attachTechFileOfLib S130
+  - strmout -library strim -strmFile design_merged.gds -logFile strmOut.log -topCell "{design_name}" -view layout -case Preserve -layerMap /skywater/V2.1.302/LIBS/S130/S130.layermap -techLib S130 -convertDot node -convertPcellPin geometry
+  - cd ../../
+  - mv ./skywater-closed-pdk-flow/CDS/design_merged.gds ./outputs/design_merged.gds
+
+parameters:
+  caravel_path: "/scratch/users/praina/ee372/gcdunit_caravel_user_project"
+  sram_path: "/farmshare/home/classes/ee/372/PDKs/sky130_sram_macros"
+  design_name: "user_project_wrapper"
