@@ -114,6 +114,9 @@ set_dont_use [get_lib_cell -quiet sky130_fd_sc_hd__tt_025C_1v80/sky130_fd_sc_hd_
 # broken PDK, with some placement next to a conb cell will overlap npc layer
 set_dont_use [get_lib_cell -quiet sky130_fd_sc_hd__tt_025C_1v80/sky130_fd_sc_hd__and2_0]
 
+set_isolate_ports -type buffer [all_outputs]
+set_fix_multiple_port_nets -outputs -buffer_constants
+
 
 
 
