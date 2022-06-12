@@ -30,6 +30,8 @@ set_interactive_constraint_modes [all_constraint_modes -active]
 # set_max_transition 0.04 [get_lib_pins *mask*]
 
 
+set_dont_touch [get_cells *U*]
+
 
 
 
