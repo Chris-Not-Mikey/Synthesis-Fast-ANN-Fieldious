@@ -350,7 +350,7 @@ def construct():
   # g.connect_by_name( rtl_sim,               pt_power_rtl    ) # run.vcd
   g.connect( signoff.o('design.spef.gz'),   pt_power_gl.i('design.spef.gz' ) )
   g.connect( signoff.o('design.vcs.v'  ),   pt_power_gl.i('design.vcs.v'   ) )
-  g.connect( dc.o(     'design.sdc'    ),   pt_power_gl.i('design.pt.sdc'  ) )
+  g.connect( signoff.o('design_format.sdc'    ),   pt_power_gl.i('design.pt.sdc'  ) )
   g.connect_by_name( gen_saif_gl,           pt_power_gl    ) # run.saif
   # g.connect_by_name( gl_sim,               pt_power_gl    ) # run.vcd
 
