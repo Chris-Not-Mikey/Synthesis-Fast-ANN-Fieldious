@@ -29,7 +29,8 @@ set_interactive_constraint_modes [all_constraint_modes -active]
 # set_max_transition 0.04 [get_lib_pins *addr0*]
 # set_max_transition 0.04 [get_lib_pins *mask*]
 
-
+attachIOBuffer -out [get_lib_cell -quiet sky130_fd_sc_hd__tt_025C_1v80/sky130_fd_sc_hd__buf]
+set_dont_touch [get_lib_cell -quiet sky130_fd_sc_hd__tt_025C_1v80/sky130_fd_sc_hd__probec_p_8]
 
 
 
