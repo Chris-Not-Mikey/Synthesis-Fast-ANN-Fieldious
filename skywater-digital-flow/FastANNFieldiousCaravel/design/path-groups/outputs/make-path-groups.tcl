@@ -25,6 +25,8 @@ resetPathGroupOptions
 # Create collection for each category
 set_interactive_constraint_modes [all_constraint_modes -active] 
 
+attachIOBuffer -out [get_lib_cell -quiet sky130_fd_sc_hd__tt_025C_1v80/sky130_fd_sc_hd__buf]
+
 
 # set_max_transition 0.04 [get_lib_pins *addr0*]
 # set_max_transition 0.04 [get_lib_pins *mask*]
