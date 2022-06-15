@@ -77,7 +77,6 @@ module user_proj_example #(
     wire [21:0]                                             wbs_node_mem_wdata;
     wire [21:0]                                             wbs_node_mem_rdata;
 
-    wire                                                    wbs_fsm_start_synced;
     wire                                                    fsm_done_synced;
     wire                                                    load_done_synced;
     wire                                                    send_done_synced;
@@ -263,7 +262,7 @@ module user_proj_example #(
 
         .wb_clk_i(wb_clk_i),
         .wb_rst_n_i(wb_rst_n_sync),
-        .wbs_fsm_start(wbs_fsm_start_synced),
+        .wbs_fsm_start(wbs_fsm_start),
         .wbs_load_done(load_done_synced),
         .wbs_fsm_done(fsm_done_synced),
         .wbs_send_done(send_done_synced),
