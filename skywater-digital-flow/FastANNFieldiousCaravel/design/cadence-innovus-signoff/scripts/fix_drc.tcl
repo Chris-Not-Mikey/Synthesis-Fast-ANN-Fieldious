@@ -11,3 +11,5 @@ ecoRoute
 verifyProcessAntenna
 editDelete -regular_wire_with_drc
 ecoRoute
+
+deleteRouteBlk -layer {met5} -name "OpenlaneBLK"

@@ -111,7 +111,49 @@ addStripe -nets {vssd1 vccd1} -layer $pmesh_bot -direction vertical \
     -start [expr 1*$pmesh_bot_str_pitch]
 
 
-# connects nothing
+#-------------------------------------------------------------------------
+# Power mesh top settings (horizontal)
+#-------------------------------------------------------------------------
+# - pmesh_top_str_width            : 8X thickness compared to 3 * M1 width
+# - pmesh_top_str_pitch            : Arbitrarily choosing the stripe pitch
+# - pmesh_top_str_intraset_spacing : Space between VSS/VDD, choosing
+#                                    constant pitch across VSS/VDD stripes
+# - pmesh_top_str_interset_pitch   : Pitch between same-signal stripes
+
+set pmesh_top_str_width [expr  8 *  3 * $M1_min_width   ]
+set pmesh_top_str_pitch [expr 4 * 10 * $M1_route_pitchX]
+
+set pmesh_top_str_intraset_spacing [expr 3.1]
+set pmesh_top_str_interset_pitch   [expr 90]
+
+setViaGenMode -reset
+setViaGenMode -viarule_preference default
+setViaGenMode -ignore_DRC false
+
+setAddStripeMode -reset
+setAddStripeMode -stacked_via_bottom_layer $pmesh_bot \
+                 -stacked_via_top_layer    $pmesh_top \
+                 -trim_antenna_back_to_shape stripe
+# Add the stripes
+#
+# Use -start to offset the stripes slightly away from the core edge.
+# Allow same-layer jogs to connect stripes to the core ring if some
+# blockage is in the way (e.g., connections from core ring to pads).
+# Restrict any routing around blockages to use only layers for power.
+
+addStripe -nets {vssd1 vccd1} -layer $pmesh_top -direction horizontal \
+    -width $pmesh_top_str_width                                   \
+    -spacing $pmesh_top_str_intraset_spacing                      \
+    -set_to_set_distance $pmesh_top_str_interset_pitch            \
+    -max_same_layer_jog_length $pmesh_top_str_pitch               \
+    -padcore_ring_bottom_layer_limit $pmesh_bot                   \
+    -padcore_ring_top_layer_limit $pmesh_top                      \
+    -block_ring_bottom_layer_limit met4                           \
+    -start 65
+
+
+
+# connects nothing because the sky130_sram has bad routing blockage for met1-met4
 # Route power to power pins on the macro
 # deselectAll
  
@@ -182,5 +224,5 @@ setPlaceMode -prerouteAsObs {5}
 selectModule acc_inst
 set box "31 31 2830 3429"
 
-createRouteBlk -box $box -layer {met5}
+createRouteBlk -box $box -layer {met5} -name "OpenlaneBLK"
 deselectAll
