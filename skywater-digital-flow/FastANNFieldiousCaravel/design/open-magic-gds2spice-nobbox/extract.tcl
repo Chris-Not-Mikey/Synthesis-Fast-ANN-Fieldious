@@ -9,6 +9,7 @@ gds order true
 gds flatten true
 gds read ./inputs/design_merged.gds
 load $::env(design_name)
+ext2spice short resistor
 select top cell
 extract no all
 extract do local
