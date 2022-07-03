@@ -28,6 +28,21 @@ create_clock -name ${wbclock_name}  -period 100 [get_ports "wb_clk_i"]
 create_clock -name ${ioclock_name}  -period ${clock_period} [get_ports "io_in[0]"] 
 create_clock -name ${userclock2_name}   -period ${clock_period} [get_ports "user_clock2"] 
 
+set_timing_derate -early [expr {1-0.05}]
+set_timing_derate -late [expr {1+0.05}]
+set_clock_uncertainty 0.25 [get_clocks "ideal_user_clock2"]
+set_clock_transition 0.15 [get_clocks "ideal_user_clock2"]
+
+set_timing_derate -early [expr {1-0.05}]
+set_timing_derate -late [expr {1+0.05}]
+set_clock_uncertainty 0.25 [get_clocks "ideal_clock"]
+set_clock_transition 0.15 [get_clocks "ideal_clock"]
+
+set_timing_derate -early [expr {1-0.05}]
+set_timing_derate -late [expr {1+0.05}]
+set_clock_uncertainty 0.25 [get_clocks "ideal_clock_io"]
+set_clock_transition 0.15 [get_clocks "ideal_clock_io"]
+
 #MUXES
 #set_clock_groups -logically_exclusive -group [get_clocks "ideal_clock_io"]  -group [get_clocks "ideal_user_clock2"] -group [get_clocks "ideal_clock"]
 
