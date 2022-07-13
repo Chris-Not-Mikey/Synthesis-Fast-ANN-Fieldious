@@ -31,8 +31,8 @@ set_interactive_constraint_modes [all_constraint_modes -active]
 
 
 
-setOptMode -holdTargetSlack 0.85
-setOptMode -setupTargetSlack 0.55
+setOptMode -holdTargetSlack 1.2
+setOptMode -setupTargetSlack 0.9
 
 
 # set clock_period 5
